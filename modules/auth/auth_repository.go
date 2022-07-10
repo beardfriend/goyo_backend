@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"goyo/interfaces"
-	"goyo/models/users"
 	"goyo/server/mariadb"
 )
 
@@ -28,7 +27,8 @@ func GetAuthRepo() AuthRepo {
 }
 
 func (authRepo) Insert() {
-	mariadb.GetInstance().Create(&users.SocialLogin{Type: "kakao", Token: "asdasd", User: users.User{}})
+	// mariadb.GetInstance().Create(&users.Social{User: users.User{NickName: "nickname"}, Secret: "screct", Type: 0})
+	// mariadb.GetInstance().Create(&users.Kakao{SocialID: users.Social{User: users.User{NickName: "nickname"}, Secret: "screct", Type: 0}})
 	// User:mariadb.GetInstance().Create(&users.User{Email: "asd"}).Association()
 	// mariadb.GetInstance().Create(&users.SocialLogin{Type: "kakao", Token: "asdasd"})
 	// mariadb.GetInstance().Save(&users.SocialLogin{User: users.User{}, Type: "kakao", Token: "asdasd"})

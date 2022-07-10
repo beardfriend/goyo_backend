@@ -17,6 +17,6 @@ func main() {
 	}
 	libs.ReadEnv(mode)
 	db := mariadb.GetInstance()
-	db.AutoMigrate(&models.Health{}, &users.User{}, &users.SocialLogin{})
+	db.AutoMigrate(&models.Health{}, &users.User{}, &users.Google{}, &users.Kakao{}, &users.Normal{}, &users.Social{})
 	echo.InitEcho()
 }
