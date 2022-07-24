@@ -1,13 +1,22 @@
 package health
 
-import "github.com/labstack/echo/v4"
+import (
+	"goyo/models"
 
-func Post(c echo.Context) error {
+	"github.com/labstack/echo/v4"
+)
+
+type HealthController struct{}
+
+func (HealthController) Post(c echo.Context) error {
 	GetHealthRepo().Insert()
 	return c.NoContent(200)
 }
 
-func Check(c echo.Context) error {
-	result := GetHealthRepo().Get()
-	return c.JSON(200, result)
+func (HealthController) Check(c echo.Context) error {
+	var models models.Health
+	GetHealthRepo().Get(&models)
+
+	response := HealthResult(models)
+	return c.JSON(200, response)
 }

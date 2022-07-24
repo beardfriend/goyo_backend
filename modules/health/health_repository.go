@@ -3,13 +3,12 @@ package health
 import (
 	"sync"
 
-	"goyo/interfaces"
 	"goyo/models"
 	"goyo/server/mariadb"
 )
 
 type HealthRepo interface {
-	Get() (r interfaces.HealthResult)
+	Get(r *models.Health)
 	Insert()
 }
 
@@ -21,6 +20,9 @@ var (
 )
 
 func GetHealthRepo() HealthRepo {
+	if singleton != nil {
+		return singleton
+	}
 	once.Do(func() {
 		singleton = &healthRepo{}
 	})
@@ -33,13 +35,10 @@ func (healthRepo) Insert() {
 	}
 }
 
-func (healthRepo) Get() (r interfaces.HealthResult) {
-	var result interfaces.HealthResult
-
-	if err := mariadb.GetInstance().First(&result).Error; err != nil {
+func (healthRepo) Get(r *models.Health) {
+	if err := mariadb.GetInstance().First(&r).Error; err != nil {
 		panic(err)
 	}
-	return result
 }
 
 //func SetHealthRepo(repo HealthRepo) HealthRepo {

@@ -6,7 +6,7 @@ import (
 	"goyo/libs"
 	"goyo/models"
 	"goyo/models/users"
-	"goyo/server/echo"
+	"goyo/server"
 	"goyo/server/mariadb"
 )
 
@@ -18,5 +18,5 @@ func main() {
 	libs.ReadEnv(mode)
 	db := mariadb.GetInstance()
 	db.AutoMigrate(&models.Health{}, &users.User{}, &users.Google{}, &users.Kakao{}, &users.Normal{}, &users.Social{})
-	echo.InitEcho()
+	server.InitEcho()
 }
