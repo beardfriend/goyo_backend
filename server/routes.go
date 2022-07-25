@@ -1,6 +1,7 @@
 package server
 
 import (
+	"goyo/modules/academy"
 	"goyo/modules/common"
 	"goyo/modules/health"
 
@@ -10,6 +11,7 @@ import (
 func Routes(e *echo.Echo) {
 	controllers := []common.Controller{
 		health.HealthController{},
+		academy.AcademyController{},
 	}
 
 	var routes []common.Route
