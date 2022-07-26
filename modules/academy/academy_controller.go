@@ -11,13 +11,15 @@ import (
 type AcademyController struct{}
 
 type Query struct {
-	Query      string `json:"query"`
-	Start      int    `json:"start"`
-	Display    int    `json:"display"`
-	Adult      bool   `json:"adult"`
-	Spq        bool   `json:"spq"`
-	QueryRank  string `json:"queryRank"`
-	DeviceType string `json:"deviceType"`
+	Query      string  `json:"query"`
+	Start      int     `json:"start"`
+	Display    int     `json:"display"`
+	Adult      bool    `json:"adult"`
+	Spq        bool    `json:"spq"`
+	QueryRank  string  `json:"queryRank"`
+	DeviceType string  `json:"deviceType"`
+	X          *string `json:"x"`
+	Y          *string `json:"y"`
 }
 
 func (AcademyController) CrawlNaver(c echo.Context) error {
@@ -194,7 +196,7 @@ func (AcademyController) CrawlNaver(c echo.Context) error {
 	  
 	`)
 	// start 1 or 51
-	q := Query{Query: "양천 요가학원", Start: 51, Display: 50, Adult: false, Spq: false, QueryRank: "", DeviceType: "pcmap"}
+	q := Query{Query: "강남 맛집", Start: 51, Display: 50, Adult: false, Spq: false, QueryRank: "", DeviceType: "pcmap"}
 	req.Var("input", q)
 	ctx := context.Background()
 	var respData map[string]interface{}
