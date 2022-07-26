@@ -1,42 +1,205 @@
 package academy
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
 	"log"
-	"net/http"
-	"net/url"
-	"strings"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/labstack/echo/v4"
+	"github.com/machinebox/graphql"
 )
 
 type AcademyController struct{}
 
+type Query struct {
+	Query      string `json:"query"`
+	Start      int    `json:"start"`
+	Display    int    `json:"display"`
+	Adult      bool   `json:"adult"`
+	Spq        bool   `json:"spq"`
+	QueryRank  string `json:"queryRank"`
+	DeviceType string `json:"deviceType"`
+}
+
 func (AcademyController) CrawlNaver(c echo.Context) error {
-	search := "서울시 항동 요가학원"
-	encodedUrl := url.QueryEscape(search)
-	url := fmt.Sprintf("https://pcmap.place.naver.com/place/list?query=%s", encodedUrl)
-	resp, err := http.Get(url)
-	if err != nil {
+	client := graphql.NewClient("https://pcmap-api.place.naver.com/place/graphql")
+	req := graphql.NewRequest(`
+	query getPlacesList($input: PlacesInput) {
+		businesses: places(input: $input) {
+		  items {
+			id
+			name
+			normalizedName
+			category
+			detailCid {
+			  c0
+			  c1
+			  c2
+			  c3
+			  __typename
+			}
+			categoryCodeList
+			dbType
+			distance
+			roadAddress
+			address
+			fullAddress
+			commonAddress
+			bookingUrl
+			phone
+			virtualPhone
+			businessHours
+			daysOff
+			imageUrl
+			imageCount
+			x
+			y
+			poiInfo {
+			  polyline {
+				shapeKey {
+				  id
+				  name
+				  version
+				  __typename
+				}
+				boundary {
+				  minX
+				  minY
+				  maxX
+				  maxY
+				  __typename
+				}
+				details {
+				  totalDistance
+				  arrivalAddress
+				  departureAddress
+				  __typename
+				}
+				__typename
+			  }
+			  polygon {
+				shapeKey {
+				  id
+				  name
+				  version
+				  __typename
+				}
+				boundary {
+				  minX
+				  minY
+				  maxX
+				  maxY
+				  __typename
+				}
+				__typename
+			  }
+			  __typename
+			}
+			subwayId     
+			isPublicGas
+			isDelivery
+			isTableOrder
+			isPreOrder
+			isTakeOut
+			isCvsDelivery
+			hasBooking
+			naverBookingCategory
+			bookingDisplayName
+			bookingBusinessId
+			bookingVisitId
+			bookingPickupId
+			easyOrder {
+			  easyOrderId
+			  easyOrderCid
+			  businessHours {
+				weekday {
+				  start
+				  end
+				  __typename
+				}
+				weekend {
+				  start
+				  end
+				  __typename
+				}
+				__typename
+			  }
+			  __typename
+			}
+			baemin {
+			  businessHours {
+				deliveryTime {
+				  start
+				  end
+				  __typename
+				}
+				closeDate {
+				  start
+				  end
+				  __typename
+				}
+				temporaryCloseDate {
+				  start
+				  end
+				  __typename
+				}
+				__typename
+			  }
+			  __typename
+			}
+			yogiyo {
+			  businessHours {
+				actualDeliveryTime {
+				  start
+				  end
+				  __typename
+				}
+				bizHours {
+				  start
+				  end
+				  __typename
+				}
+				__typename
+			  }
+			  __typename
+			}
+			isPollingStation
+			hasNPay
+			talktalkUrl
+			visitorReviewCount
+			visitorReviewScore
+			blogCafeReviewCount
+			bookingReviewCount
+			streetPanorama {
+			  id
+			  pan
+			  tilt
+			  lat
+			  lon
+			  __typename
+			}
+			naverBookingHubId
+			bookingHubUrl
+			bookingHubButtonName
+			newOpening
+			newBusinessHours {
+			  status
+			  description
+			  dayOff
+			  dayOffDescription
+			  __typename
+			}
+		  }
+		}
+	  }
+	  
+	`)
+	// start 1 or 51
+	q := Query{Query: "양천 요가학원", Start: 51, Display: 50, Adult: false, Spq: false, QueryRank: "", DeviceType: "pcmap"}
+	req.Var("input", q)
+	ctx := context.Background()
+	var respData map[string]interface{}
+	if err := client.Run(ctx, req, &respData); err != nil {
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
-
-	html, _ := goquery.NewDocumentFromReader(resp.Body)
-	index := strings.Index(html.Text(), "{\"$ROOT_QUERY.places")
-	index2 := strings.Index(html.Text(), "window.__PLACE_STATE__")
-	fmt.Println(index, index2)
-	str := strings.Trim(html.Text()[index:index2], " ")
-	dd := str[:len(str)-2]
-	var ss map[string]interface{}
-
-	json.Unmarshal([]byte(dd), &ss)
-	// var result []models.AdminiStrationDivision
-	// mariadb.GetInstance().Raw(`SELECT si_gun_gu FROM administration_division WHERE si_do='서울'`).Find(&result)
-	firstQuery := fmt.Sprintf("$ROOT_QUERY.places({\"input\":{\"adult\":false,\"deviceType\":\"pcmap\",\"display\":50,\"query\":\"%s\",\"queryRank\":\"\",\"spq\":false,\"start\":1}})", search)
-	ff := ss[firstQuery].(map[string]interface{})
-	ff2 := ff["items"]
-	return c.JSON(200, ff2)
+	return c.JSON(200, respData)
 }
