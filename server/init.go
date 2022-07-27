@@ -15,6 +15,7 @@ func InitEcho() {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 	}))
+
 	Routes(e)
 
 	e.Logger.Fatal(e.Start(":" + libs.ENV.Port))

@@ -1,207 +1,69 @@
 package academy
 
 import (
-	"context"
-	"log"
+	"fmt"
+
+	"goyo/libs/naver"
+	"goyo/models"
+	"goyo/models/academy"
+	"goyo/modules/common"
 
 	"github.com/labstack/echo/v4"
-	"github.com/machinebox/graphql"
 )
 
 type AcademyController struct{}
 
-type Query struct {
-	Query      string  `json:"query"`
-	Start      int     `json:"start"`
-	Display    int     `json:"display"`
-	Adult      bool    `json:"adult"`
-	Spq        bool    `json:"spq"`
-	QueryRank  string  `json:"queryRank"`
-	DeviceType string  `json:"deviceType"`
-	X          *string `json:"x"`
-	Y          *string `json:"y"`
-}
-
 func (AcademyController) CrawlNaver(c echo.Context) error {
-	client := graphql.NewClient("https://pcmap-api.place.naver.com/place/graphql")
-	req := graphql.NewRequest(`
-	query getPlacesList($input: PlacesInput) {
-		businesses: places(input: $input) {
-		  items {
-			id
-			name
-			normalizedName
-			category
-			detailCid {
-			  c0
-			  c1
-			  c2
-			  c3
-			  __typename
-			}
-			categoryCodeList
-			dbType
-			distance
-			roadAddress
-			address
-			fullAddress
-			commonAddress
-			bookingUrl
-			phone
-			virtualPhone
-			businessHours
-			daysOff
-			imageUrl
-			imageCount
-			x
-			y
-			poiInfo {
-			  polyline {
-				shapeKey {
-				  id
-				  name
-				  version
-				  __typename
-				}
-				boundary {
-				  minX
-				  minY
-				  maxX
-				  maxY
-				  __typename
-				}
-				details {
-				  totalDistance
-				  arrivalAddress
-				  departureAddress
-				  __typename
-				}
-				__typename
-			  }
-			  polygon {
-				shapeKey {
-				  id
-				  name
-				  version
-				  __typename
-				}
-				boundary {
-				  minX
-				  minY
-				  maxX
-				  maxY
-				  __typename
-				}
-				__typename
-			  }
-			  __typename
-			}
-			subwayId     
-			isPublicGas
-			isDelivery
-			isTableOrder
-			isPreOrder
-			isTakeOut
-			isCvsDelivery
-			hasBooking
-			naverBookingCategory
-			bookingDisplayName
-			bookingBusinessId
-			bookingVisitId
-			bookingPickupId
-			easyOrder {
-			  easyOrderId
-			  easyOrderCid
-			  businessHours {
-				weekday {
-				  start
-				  end
-				  __typename
-				}
-				weekend {
-				  start
-				  end
-				  __typename
-				}
-				__typename
-			  }
-			  __typename
-			}
-			baemin {
-			  businessHours {
-				deliveryTime {
-				  start
-				  end
-				  __typename
-				}
-				closeDate {
-				  start
-				  end
-				  __typename
-				}
-				temporaryCloseDate {
-				  start
-				  end
-				  __typename
-				}
-				__typename
-			  }
-			  __typename
-			}
-			yogiyo {
-			  businessHours {
-				actualDeliveryTime {
-				  start
-				  end
-				  __typename
-				}
-				bizHours {
-				  start
-				  end
-				  __typename
-				}
-				__typename
-			  }
-			  __typename
-			}
-			isPollingStation
-			hasNPay
-			talktalkUrl
-			visitorReviewCount
-			visitorReviewScore
-			blogCafeReviewCount
-			bookingReviewCount
-			streetPanorama {
-			  id
-			  pan
-			  tilt
-			  lat
-			  lon
-			  __typename
-			}
-			naverBookingHubId
-			bookingHubUrl
-			bookingHubButtonName
-			newOpening
-			newBusinessHours {
-			  status
-			  description
-			  dayOff
-			  dayOffDescription
-			  __typename
-			}
-		  }
-		}
-	  }
-	  
-	`)
-	// start 1 or 51
-	q := Query{Query: "강남 맛집", Start: 51, Display: 50, Adult: false, Spq: false, QueryRank: "", DeviceType: "pcmap"}
-	req.Var("input", q)
-	ctx := context.Background()
-	var respData map[string]interface{}
-	if err := client.Run(ctx, req, &respData); err != nil {
-		log.Fatal(err)
+	var gu []models.AdminiStrationDivision
+	if err := common.GetCommonRepo().Getgu(&gu); err != nil {
+		panic(err)
 	}
-	return c.JSON(200, respData)
+	for i := 0; i < 2; i++ {
+		startNum := 1
+		if i == 1 {
+			startNum = 51
+		}
+		for _, v := range gu {
+			queryString := fmt.Sprintf("%s 요가", v.SiGunGu)
+			q := naver.NaverPlaceQuery{Query: queryString, Start: startNum, Display: 50, Adult: false, Spq: false, QueryRank: "", DeviceType: "pcmap"}
+			var result naver.NaverPlaceResult
+			if err := naver.GetNaverLib().Get(&q, &result); err != nil {
+				panic(err)
+			}
+			for _, v := range result.Result.Items {
+
+				isRelatedYoga := v.Category == "요가원" || v.Category == "요가,명상"
+
+				if !isRelatedYoga {
+					continue
+				}
+
+				isExist := GetAcademyRepo().FindNaverBasicInfo(v.Id) == 1
+
+				if isExist {
+					continue
+				}
+
+				insertValue := academy.NaverBasicInfo{
+					NaverId:       v.Id,
+					Name:          v.Name,
+					Category:      v.Category,
+					RoadAddress:   v.RoadAddress,
+					CommonAddress: v.CommonAddress,
+					BookingUrl:    v.BookingUrl,
+					PhoneNum:      v.Phone,
+					BusinessHours: v.BusinessHours,
+					ImageUrl:      v.ImageUrl,
+					X:             v.X,
+					Y:             v.Y,
+				}
+				if err := GetAcademyRepo().InsertNaverBasicInfo(&insertValue); err != nil {
+					panic(err)
+				}
+
+			}
+
+		}
+	}
+	return c.JSON(200, "ok")
 }
