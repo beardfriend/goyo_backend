@@ -2,7 +2,9 @@ package server
 
 import (
 	"goyo/libs"
+	"goyo/modules/middlewares"
 
+	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -16,7 +18,12 @@ func InitEcho() {
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 	}))
 
-	Routes(e)
-
 	e.Logger.Fatal(e.Start(":" + libs.ENV.Port))
+}
+
+func InitGin() {
+	server := gin.Default()
+	server.Use(middlewares.ErrorHandleRecovery())
+	GinRoutes(server)
+	server.Run(":8000")
 }

@@ -3,20 +3,20 @@ package health
 import (
 	"goyo/models"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 type HealthController struct{}
 
-func (HealthController) Post(c echo.Context) error {
+func (HealthController) Post(c *gin.Context) {
 	GetHealthRepo().Insert()
-	return c.NoContent(200)
+	c.String(200, "")
 }
 
-func (HealthController) Check(c echo.Context) error {
+func (HealthController) Check(c *gin.Context) {
 	var models models.Health
 	GetHealthRepo().Get(&models)
 
 	response := HealthResult(models)
-	return c.JSON(200, response)
+	c.JSON(200, response)
 }

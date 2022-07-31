@@ -1,14 +1,20 @@
 package server
 
 import (
+	"log"
+
 	"goyo/modules/academy"
 	"goyo/modules/common"
 	"goyo/modules/health"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func Routes(e *echo.Echo) {
+func GinRoutes(engine *gin.Engine) {
+	if err := engine.SetTrustedProxies(nil); err != nil {
+		log.Fatal(err)
+	}
+
 	controllers := []common.Controller{
 		health.HealthController{},
 		academy.AcademyController{},
@@ -20,32 +26,35 @@ func Routes(e *echo.Echo) {
 		routes = append(routes, controller.Routes()...)
 	}
 
-	api := e.Group("")
+	api := engine.Group("")
+
 	for _, route := range routes {
 		switch route.Method {
-		case echo.POST:
+
+		case "POST":
 			{
-				api.POST(route.Path, route.Handler, route.Middleware...)
+
+				api.POST(route.Path, route.Handler...)
 				break
 			}
-		case echo.GET:
+		case "GET":
 			{
-				api.GET(route.Path, route.Handler, route.Middleware...)
+				api.GET(route.Path, route.Handler...)
 				break
 			}
-		case echo.DELETE:
+		case "DELETE":
 			{
-				api.DELETE(route.Path, route.Handler, route.Middleware...)
+				api.DELETE(route.Path, route.Handler...)
 				break
 			}
-		case echo.PUT:
+		case "PUT":
 			{
-				api.PUT(route.Path, route.Handler, route.Middleware...)
+				api.PUT(route.Path, route.Handler...)
 				break
 			}
-		case echo.PATCH:
+		case "PATCH":
 			{
-				api.PATCH(route.Path, route.Handler, route.Middleware...)
+				api.PATCH(route.Path, route.Handler...)
 				break
 			}
 		}

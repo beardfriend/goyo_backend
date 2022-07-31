@@ -3,20 +3,20 @@ package health
 import (
 	"goyo/modules/common"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 func (c HealthController) Routes() []common.Route {
 	return []common.Route{
 		{
-			Method:  echo.POST,
+			Method:  "POST",
 			Path:    "/health",
-			Handler: c.Post,
+			Handler: []gin.HandlerFunc{c.Post},
 		},
 		{
-			Method:  echo.GET,
+			Method:  "GET",
 			Path:    "/health",
-			Handler: c.Check,
+			Handler: []gin.HandlerFunc{c.Check},
 		},
 	}
 }
