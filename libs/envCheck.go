@@ -58,6 +58,11 @@ func ReadEnv(mode string) {
 		str, err := godotenv.Read("./.env.prod")
 		result = str
 		error = err
+	}
+	if mode == "test" {
+		str, err := godotenv.Read("../../.env.dev")
+		result = str
+		error = err
 	} else {
 		str, err := godotenv.Read("./.env.dev")
 		result = str
