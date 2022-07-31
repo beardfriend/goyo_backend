@@ -2,18 +2,19 @@ package academy
 
 import (
 	"fmt"
+	"net/http"
 
 	"goyo/libs/naver"
 	"goyo/models"
 	"goyo/models/academy"
 	"goyo/modules/common"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 type AcademyController struct{}
 
-func (AcademyController) CrawlNaver(c echo.Context) error {
+func (AcademyController) CrawlNaver(c *gin.Context) {
 	var gu []models.AdminiStrationDivision
 	if err := common.GetCommonRepo().Getgu(&gu); err != nil {
 		panic(err)
@@ -65,5 +66,5 @@ func (AcademyController) CrawlNaver(c echo.Context) error {
 
 		}
 	}
-	return c.JSON(200, "ok")
+	common.SendOk(c, http.StatusCreated, "ok")
 }
