@@ -7,33 +7,33 @@ import (
 	"goyo/server/mariadb"
 )
 
-type AcademyRepo interface {
+type Repo interface {
 	FindNaverBasicInfo(naverId string) int64
 	InsertNaverBasicInfo(value *academy.NaverBasicInfo) error
 }
 
-type academyRepo struct{}
+type repo struct{}
 
-func (academyRepo) FindNaverBasicInfo(naverId string) int64 {
+func (repo) FindNaverBasicInfo(naverId string) int64 {
 	var result academy.NaverBasicInfo
-	return mariadb.GetInstance().Debug().Where("naver_id = ?", naverId).Find(&result).RowsAffected
+	return mariadb.GetInstance().Where("naver_id = ?", naverId).Find(&result).RowsAffected
 }
 
-func (academyRepo) InsertNaverBasicInfo(value *academy.NaverBasicInfo) error {
-	return mariadb.GetInstance().Debug().Create(&value).Error
+func (repo) InsertNaverBasicInfo(value *academy.NaverBasicInfo) error {
+	return mariadb.GetInstance().Create(&value).Error
 }
 
 var (
-	academyRepoInstance AcademyRepo
-	repoOnce            sync.Once
+	repoInstance Repo
+	repoOnce     sync.Once
 )
 
-func GetAcademyRepo() AcademyRepo {
-	if academyRepoInstance != nil {
-		return academyRepoInstance
+func GetRepo() Repo {
+	if repoInstance != nil {
+		return repoInstance
 	}
 	repoOnce.Do(func() {
-		academyRepoInstance = &academyRepo{}
+		repoInstance = &repo{}
 	})
-	return academyRepoInstance
+	return repoInstance
 }

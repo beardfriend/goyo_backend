@@ -28,7 +28,7 @@ func (AcademyController) CrawlNaver(c *gin.Context) {
 			queryString := fmt.Sprintf("%s 요가", v.SiGunGu)
 			q := naver.NaverPlaceQuery{Query: queryString, Start: startNum, Display: 50, Adult: false, Spq: false, QueryRank: "", DeviceType: "pcmap"}
 			var result naver.NaverPlaceResult
-			if err := naver.GetNaverLib().Get(&q, &result); err != nil {
+			if err := naver.GetLib().Get(&q, &result); err != nil {
 				panic(err)
 			}
 			for _, v := range result.Result.Items {
@@ -39,7 +39,7 @@ func (AcademyController) CrawlNaver(c *gin.Context) {
 					continue
 				}
 
-				isExist := GetAcademyRepo().FindNaverBasicInfo(v.Id) == 1
+				isExist := GetRepo().FindNaverBasicInfo(v.Id) == 1
 
 				if isExist {
 					continue
@@ -58,7 +58,7 @@ func (AcademyController) CrawlNaver(c *gin.Context) {
 					X:             v.X,
 					Y:             v.Y,
 				}
-				if err := GetAcademyRepo().InsertNaverBasicInfo(&insertValue); err != nil {
+				if err := GetRepo().InsertNaverBasicInfo(&insertValue); err != nil {
 					panic(err)
 				}
 

@@ -1,4 +1,4 @@
-package academy
+package schedules
 
 import (
 	"goyo/libs/types"
@@ -20,5 +20,5 @@ type TimeTable struct {
 }
 
 func (TimeTable) TableName() string {
-	return "academy_time_table"
+	return "schedule_time_table"
 }

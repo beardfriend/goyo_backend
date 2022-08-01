@@ -2,16 +2,9 @@ package naver
 
 import (
 	"context"
-	"sync"
 
 	"github.com/machinebox/graphql"
 )
-
-type NaverLib interface {
-	Get(query *NaverPlaceQuery, result *NaverPlaceResult) error
-}
-
-type naverLib struct{}
 
 type NaverPlaceQuery struct {
 	Query      string `json:"query"`
@@ -51,7 +44,7 @@ type NaverPlaceItemDetail struct {
 	Y             string  `json:"y"`
 }
 
-func (naverLib) Get(query *NaverPlaceQuery, result *NaverPlaceResult) error {
+func (lib) Get(query *NaverPlaceQuery, result *NaverPlaceResult) error {
 	client := graphql.NewClient("https://pcmap-api.place.naver.com/place/graphql")
 	req := graphql.NewRequest(`
 	query getPlacesList($input: PlacesInput) {
@@ -83,19 +76,4 @@ func (naverLib) Get(query *NaverPlaceQuery, result *NaverPlaceResult) error {
 	ctx := context.Background()
 	err := client.Run(ctx, req, &result)
 	return err
-}
-
-var (
-	naverlibInstance NaverLib
-	once             sync.Once
-)
-
-func GetNaverLib() NaverLib {
-	if naverlibInstance != nil {
-		return naverlibInstance
-	}
-	once.Do(func() {
-		naverlibInstance = &naverLib{}
-	})
-	return naverlibInstance
 }
