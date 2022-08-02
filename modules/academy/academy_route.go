@@ -13,5 +13,10 @@ func (c AcademyController) Routes() []common.Route {
 			Path:    "/academy",
 			Handler: []gin.HandlerFunc{c.CrawlNaver},
 		},
+		{
+			Method:  "GET",
+			Path:    "/academy/list",
+			Handler: []gin.HandlerFunc{c.GetList},
+		},
 	}
 }

@@ -68,3 +68,15 @@ func (AcademyController) CrawlNaver(c *gin.Context) {
 	}
 	common.SendOk(c, http.StatusCreated, "ok")
 }
+
+func (AcademyController) GetList(c *gin.Context) {
+	var academyList []NaverBasicInfoDAO
+	if err := GetRepo().GetAcademyListByYoga("아쉬탕가", &academyList); err != nil {
+		panic(err)
+	}
+
+	yogaList := GetService().NewYogaList(academyList)
+	response := GetService().NewGetListResponse(academyList, yogaList)
+
+	common.SendResult(c, 200, "성공적으로 조회했습니다.", response)
+}
