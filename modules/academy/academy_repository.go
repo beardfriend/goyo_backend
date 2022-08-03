@@ -5,12 +5,15 @@ import (
 
 	"goyo/models/academy"
 	"goyo/server/mariadb"
+
+	"gorm.io/gorm/clause"
 )
 
 type Repo interface {
 	FindNaverBasicInfo(naverId string) int64
 	InsertNaverBasicInfo(value *academy.NaverBasicInfo) error
-	GetAcademyListByYoga(sort string, result *[]NaverBasicInfoDAO) error
+	GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDAO) error
+	GetAcademyTotalByYoga(query *GetListQuery, total *int64) error
 }
 
 type repo struct{}
@@ -24,13 +27,53 @@ func (repo) InsertNaverBasicInfo(value *academy.NaverBasicInfo) error {
 	return mariadb.GetInstance().Create(&value).Error
 }
 
-func (repo) GetAcademyListByYoga(sort string, result *[]NaverBasicInfoDAO) error {
+func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
+	clauses := make([]clause.Expression, 0)
+	if query.SiGunGu != "" {
+		clauses = append(clauses, clause.Like{Column: "a.common_address", Value: "%" + query.SiGunGu + "%"})
+	}
+
+	if query.YogaSort != "" {
+		clauses = append(clauses, clause.Eq{Column: "b.name", Value: query.YogaSort})
+	}
+
+	return mariadb.GetInstance().
+		Clauses(clauses...).
+		Table("academy_naver_basic_info a").
+		Select("count(a.id) as total").
+		Joins("JOIN yoga_sort b ON a.id = b.naver_basic_info_id").
+		Count(total).Error
+}
+
+func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDAO) error {
+	clauses := make([]clause.Expression, 0)
+	offset := 0
+	limit := 10
+
+	if query.RowCount != 10 && query.RowCount != 0 {
+		limit = query.RowCount
+	}
+
+	if query.PageNo > 1 {
+		offset = offset + ((query.PageNo - 1) * limit)
+	}
+
+	clauses = append(clauses, clause.Limit{Limit: limit, Offset: offset})
+
+	if query.SiGunGu != "" {
+		clauses = append(clauses, clause.Like{Column: "a.common_address", Value: "%" + query.SiGunGu + "%"})
+	}
+
+	if query.YogaSort != "" {
+		clauses = append(clauses, clause.Eq{Column: "b.name", Value: query.YogaSort})
+	}
+
 	return mariadb.GetInstance().
 		Debug().
+		Clauses(clauses...).
 		Table("academy_naver_basic_info a").
 		Select("a.*").
 		Joins("JOIN yoga_sort b ON a.id = b.naver_basic_info_id").
-		Where("b.name = ?", sort).
 		Find(&result).Error
 }
 

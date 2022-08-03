@@ -70,13 +70,25 @@ func (AcademyController) CrawlNaver(c *gin.Context) {
 }
 
 func (AcademyController) GetList(c *gin.Context) {
+	query := new(GetListQuery)
+
+	if err := c.ShouldBindQuery(&query); err != nil {
+		errorMessage := common.BindJsonError(err, "GetListQuery")
+		common.SendError(c, 400, errorMessage+" 를 입력해주세요")
+	}
+
 	var academyList []NaverBasicInfoDAO
-	if err := GetRepo().GetAcademyListByYoga("아쉬탕가", &academyList); err != nil {
+	if err := GetRepo().GetAcademyListByYoga(query, &academyList); err != nil {
+		panic(err)
+	}
+
+	var total int64
+	if err := GetRepo().GetAcademyTotalByYoga(query, &total); err != nil {
 		panic(err)
 	}
 
 	yogaList := GetService().NewYogaList(academyList)
-	response := GetService().NewGetListResponse(academyList, yogaList)
+	response := GetService().NewGetListResponse(academyList, yogaList, total, query)
 
 	common.SendResult(c, 200, "성공적으로 조회했습니다.", response)
 }

@@ -1,5 +1,10 @@
 package academy
 
+import (
+	"goyo/modules/common"
+	"goyo/modules/yoga"
+)
+
 // --------------- Request -------------------------
 type RegistRequestBody struct {
 	Year        string `json:"year" binding:"required"`
@@ -13,20 +18,32 @@ type RegistRequestBody struct {
 	TeacherName string `json:"teacherName"`
 }
 
+type GetListQuery struct {
+	YogaSort string `form:"yoga_sort"`
+	SiGunGu  string `form:"si_gun_gu"`
+	PageNo   int    `form:"page_no,default=1"`
+	RowCount int    `form:"row_count,default=10"`
+}
+
 // -------------- Response ---------------------
 type GetListResponse struct {
-	Id            uint     `json:"id"`
-	Name          string   `json:"name"`
-	Category      string   `json:"category"`
-	RoadAddress   string   `json:"roadAddress"`
-	CommonAddress string   `json:"commonAddress"`
-	BookingUrl    *string  `json:"bookingUrl"`
-	PhoneNum      *string  `json:"phoneNum"`
-	BusinessHours *string  `json:"businessHours"`
-	ImageUrl      *string  `json:"imageUrl"`
-	X             string   `json:"x"`
-	Y             string   `json:"y"`
-	YogaSort      []string `json:"yogaSort"`
+	List       []GetListDetail       `json:"list"`
+	Pagination common.PaginationInfo `json:"pagination"`
+}
+
+type GetListDetail struct {
+	Id            uint            `json:"id"`
+	Name          string          `json:"name"`
+	Category      string          `json:"category"`
+	RoadAddress   string          `json:"roadAddress"`
+	CommonAddress string          `json:"commonAddress"`
+	BookingUrl    *string         `json:"bookingUrl"`
+	PhoneNum      *string         `json:"phoneNum"`
+	BusinessHours *string         `json:"businessHours"`
+	ImageUrl      *string         `json:"imageUrl"`
+	X             string          `json:"x"`
+	Y             string          `json:"y"`
+	YogaSort      []yoga.Response `json:"yogaSort"`
 }
 
 // --------------- DAO ---------------------
