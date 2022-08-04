@@ -42,6 +42,7 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 		Table("academy_naver_basic_info a").
 		Select("count(a.id) as total").
 		Joins("JOIN yoga_sort b ON a.id = b.naver_basic_info_id").
+		Group("a.id").
 		Count(total).Error
 }
 
