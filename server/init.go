@@ -4,6 +4,7 @@ import (
 	"goyo/libs"
 	"goyo/modules/middlewares"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -23,6 +24,7 @@ func InitEcho() {
 
 func InitGin() {
 	server := gin.Default()
+	server.Use(cors.Default())
 	server.Use(middlewares.ErrorHandleRecovery())
 	GinRoutes(server)
 	server.Run(":8000")

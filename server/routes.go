@@ -6,6 +6,7 @@ import (
 	"goyo/modules/academy"
 	"goyo/modules/common"
 	"goyo/modules/health"
+	"goyo/modules/yoga"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +19,7 @@ func GinRoutes(engine *gin.Engine) {
 	controllers := []common.Controller{
 		health.HealthController{},
 		academy.AcademyController{},
+		yoga.YogaController{},
 	}
 
 	var routes []common.Route

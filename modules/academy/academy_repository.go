@@ -1,6 +1,7 @@
 package academy
 
 import (
+	"strings"
 	"sync"
 
 	"goyo/models/academy"
@@ -34,10 +35,20 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 	}
 
 	if query.YogaSort != "" {
-		clauses = append(clauses, clause.Eq{Column: "b.name", Value: query.YogaSort})
+		if strings.Contains(query.YogaSort, ",") {
+			ss := strings.Split(query.YogaSort, ",")
+			s := make([]interface{}, len(ss))
+			for i, v := range ss {
+				s[i] = v
+			}
+			clauses = append(clauses, clause.IN{Column: "b.name", Values: s})
+		} else {
+			clauses = append(clauses, clause.Eq{Column: "b.name", Value: query.YogaSort})
+		}
 	}
 
 	return mariadb.GetInstance().
+		Debug().
 		Clauses(clauses...).
 		Table("academy_naver_basic_info a").
 		Select("count(a.id) as total").
@@ -66,9 +77,17 @@ func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDT
 	}
 
 	if query.YogaSort != "" {
-		clauses = append(clauses, clause.Eq{Column: "b.name", Value: query.YogaSort})
+		if strings.Contains(query.YogaSort, ",") {
+			ss := strings.Split(query.YogaSort, ",")
+			s := make([]interface{}, len(ss))
+			for i, v := range ss {
+				s[i] = v
+			}
+			clauses = append(clauses, clause.IN{Column: "b.name", Values: s})
+		} else {
+			clauses = append(clauses, clause.Eq{Column: "b.name", Value: query.YogaSort})
+		}
 	}
-
 	return mariadb.GetInstance().
 		Debug().
 		Clauses(clauses...).
