@@ -77,7 +77,7 @@ func (AcademyController) GetList(c *gin.Context) {
 		common.SendError(c, 400, errorMessage+" 를 입력해주세요")
 	}
 
-	var academyList []NaverBasicInfoDAO
+	var academyList []NaverBasicInfoDTO
 	if err := GetRepo().GetAcademyListByYoga(query, &academyList); err != nil {
 		panic(err)
 	}
@@ -87,8 +87,7 @@ func (AcademyController) GetList(c *gin.Context) {
 		panic(err)
 	}
 
-	yogaList := GetService().NewYogaList(academyList)
-	response := GetService().NewGetListResponse(academyList, yogaList, total, query)
+	response := GetService().NewGetListResponse(academyList, total, query)
 
 	common.SendResult(c, 200, "성공적으로 조회했습니다.", response)
 }

@@ -12,7 +12,7 @@ import (
 type Repo interface {
 	FindNaverBasicInfo(naverId string) int64
 	InsertNaverBasicInfo(value *academy.NaverBasicInfo) error
-	GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDAO) error
+	GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDTO) error
 	GetAcademyTotalByYoga(query *GetListQuery, total *int64) error
 }
 
@@ -45,7 +45,7 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 		Count(total).Error
 }
 
-func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDAO) error {
+func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDTO) error {
 	clauses := make([]clause.Expression, 0)
 	offset := 0
 	limit := 10
@@ -71,9 +71,11 @@ func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDA
 	return mariadb.GetInstance().
 		Debug().
 		Clauses(clauses...).
+		Preload("YogaSorts").
 		Table("academy_naver_basic_info a").
 		Select("a.*").
 		Joins("JOIN yoga_sort b ON a.id = b.naver_basic_info_id").
+		Group("a.id").
 		Find(&result).Error
 }
 

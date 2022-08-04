@@ -2,7 +2,6 @@ package academy
 
 import (
 	"goyo/modules/common"
-	"goyo/modules/yoga"
 )
 
 // --------------- Request -------------------------
@@ -27,37 +26,32 @@ type GetListQuery struct {
 
 // -------------- Response ---------------------
 type GetListResponse struct {
-	List       []GetListDetail       `json:"list"`
+	List       []NaverBasicInfoDTO   `json:"list"`
 	Pagination common.PaginationInfo `json:"pagination"`
-}
-
-type GetListDetail struct {
-	Id            uint            `json:"id"`
-	Name          string          `json:"name"`
-	Category      string          `json:"category"`
-	RoadAddress   string          `json:"roadAddress"`
-	CommonAddress string          `json:"commonAddress"`
-	BookingUrl    *string         `json:"bookingUrl"`
-	PhoneNum      *string         `json:"phoneNum"`
-	BusinessHours *string         `json:"businessHours"`
-	ImageUrl      *string         `json:"imageUrl"`
-	X             string          `json:"x"`
-	Y             string          `json:"y"`
-	YogaSort      []yoga.Response `json:"yogaSort"`
 }
 
 // --------------- DAO ---------------------
 
-type NaverBasicInfoDAO struct {
-	Id            uint
-	Name          string
-	Category      string
-	RoadAddress   string
-	CommonAddress string
-	BookingUrl    *string
-	PhoneNum      *string
-	BusinessHours *string
-	ImageUrl      *string
-	X             string
-	Y             string
+type NaverBasicInfoDTO struct {
+	Id            uint          `json:"id"`
+	Name          string        `json:"name"`
+	Category      string        `json:"category"`
+	RoadAddress   string        `json:"roadAddress"`
+	CommonAddress string        `json:"commonAddress"`
+	BookingUrl    *string       `json:"bookingUrl"`
+	PhoneNum      *string       `json:"phoneNum"`
+	BusinessHours *string       `json:"businessHours"`
+	ImageUrl      *string       `json:"imageUrl"`
+	X             string        `json:"x"`
+	Y             string        `json:"y"`
+	YogaSorts     []YogaSortDTO `json:"yogaSorts" gorm:"foreignKey:NaverBasicInfoID"`
+}
+
+type YogaSortDTO struct {
+	NaverBasicInfoID uint   `json:"-"`
+	Name             string `json:"name"`
+}
+
+func (YogaSortDTO) TableName() string {
+	return `yoga_sort`
 }
