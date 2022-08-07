@@ -17,6 +17,7 @@ func (YogaController) GET(c *gin.Context) {
 
 	if err := c.ShouldBindQuery(query); err != nil {
 		common.SendError(c, 400, "쿼리스트링을 확인해주세요")
+		return
 	}
 
 	isContainConsonants := false
