@@ -3,12 +3,15 @@ package academy
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"goyo/libs/naver"
 	"goyo/models"
 	"goyo/models/academy"
 	"goyo/modules/common"
+	netUrl "net/url"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,6 +70,46 @@ func (AcademyController) CrawlNaver(c *gin.Context) {
 		}
 	}
 	common.SendOk(c, http.StatusCreated, "ok")
+}
+
+func (AcademyController) UpdateThumbUrl(c *gin.Context) {
+	var result []NaverBasicInfoUpdateThumbUrlDTO
+	if err := GetRepo().FindNaverId(&result); err != nil {
+		panic(err)
+	}
+	for _, v := range result {
+
+		url := fmt.Sprintf("https://m.place.naver.com/place/%s/home", v.NaverId)
+		resp, _ := http.Get(url)
+		defer resp.Body.Close()
+
+		html, err := goquery.NewDocumentFromReader(resp.Body)
+		if err != nil {
+			continue
+		}
+
+		imageGroupDiv := html.Find("div.Y8J3x")
+		firstImage := imageGroupDiv.Find("div.cb7hz")
+		styleValue, _ := firstImage.Attr("style")
+
+		result := ""
+		if styleValue != "" {
+
+			indexFromHttps := strings.Index(styleValue, "https")
+			imageUrlWithQuotationMark := styleValue[indexFromHttps:]
+
+			indexFromQuotationMark := strings.Index(imageUrlWithQuotationMark, "\"")
+			imgUrl := styleValue[:indexFromQuotationMark]
+			decodedValue, _ := netUrl.QueryUnescape(imgUrl)
+			result = decodedValue
+		}
+		if result != "" {
+			if err := GetRepo().UpdateNaverBasicInfo(v.Id, result); err != nil {
+				continue
+			}
+		}
+	}
+	common.SendOk(c, 200, "성공적 요청")
 }
 
 func (AcademyController) GetList(c *gin.Context) {

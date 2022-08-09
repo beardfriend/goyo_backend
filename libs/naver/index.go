@@ -1,9 +1,14 @@
 package naver
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/go-resty/resty/v2"
+)
 
 type Lib interface {
 	Get(query *NaverPlaceQuery, result *NaverPlaceResult) error
+	MobileGet(naverId string) *resty.Response
 }
 
 type lib struct{}

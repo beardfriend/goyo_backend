@@ -15,6 +15,8 @@ type Repo interface {
 	InsertNaverBasicInfo(value *academy.NaverBasicInfo) error
 	GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDTO) error
 	GetAcademyTotalByYoga(query *GetListQuery, total *int64) error
+	FindNaverId(result *[]NaverBasicInfoUpdateThumbUrlDTO) error
+	UpdateNaverBasicInfo(id uint, thumbUrl string) error
 }
 
 type repo struct{}
@@ -22,6 +24,14 @@ type repo struct{}
 func (repo) FindNaverBasicInfo(naverId string) int64 {
 	var result academy.NaverBasicInfo
 	return mariadb.GetInstance().Where("naver_id = ?", naverId).Find(&result).RowsAffected
+}
+
+func (repo) FindNaverId(result *[]NaverBasicInfoUpdateThumbUrlDTO) error {
+	return mariadb.GetInstance().Select("id, naver_id").Model(&academy.NaverBasicInfo{}).Where("thumb_url IS NOT NULL").Find(result).Error
+}
+
+func (repo) UpdateNaverBasicInfo(id uint, thumbUrl string) error {
+	return mariadb.GetInstance().Model(&academy.NaverBasicInfo{}).Where("id = ?", id).Update("thumb_url", thumbUrl).Error
 }
 
 func (repo) InsertNaverBasicInfo(value *academy.NaverBasicInfo) error {

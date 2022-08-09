@@ -18,5 +18,10 @@ func (c AcademyController) Routes() []common.Route {
 			Path:    "/academy/list",
 			Handler: []gin.HandlerFunc{c.GetList},
 		},
+		{
+			Method:  "PUT",
+			Path:    "/academy/thumb_url",
+			Handler: []gin.HandlerFunc{c.UpdateThumbUrl},
+		},
 	}
 }

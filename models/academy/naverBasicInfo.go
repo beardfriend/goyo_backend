@@ -19,6 +19,7 @@ type NaverBasicInfo struct {
 	PhoneNum      *string         `gorm:"column:phone_num; VARCHAR; size:100; comment: 전화번호"`
 	BusinessHours *string         `gorm:"column:business_hours; TEXT; comment: 영업시간"`
 	ImageUrl      *string         `gorm:"column:image_url; VARCHAR; size:256; comment: 대표 이미지 주소"`
+	ThumbUrl      *string         `gorm:"column:thumb_url; VARCHAR; size:1000; comment: 썸네일 이미지 주소"`
 	X             string          `gorm:"column:x; VARCHAR; size:100; comment: x좌표"`
 	Y             string          `gorm:"column:y; VARCHAR; size:100; comment: y좌표"`
 }

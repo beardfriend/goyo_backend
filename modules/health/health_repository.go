@@ -9,7 +9,7 @@ import (
 
 type HealthRepo interface {
 	Get(r *models.Health)
-	Insert()
+	Insert(value string)
 }
 
 type healthRepo struct{}
@@ -29,8 +29,8 @@ func GetHealthRepo() HealthRepo {
 	return singleton
 }
 
-func (healthRepo) Insert() {
-	if err := mariadb.GetInstance().Save(&models.Health{Status: "ok"}).Error; err != nil {
+func (healthRepo) Insert(value string) {
+	if err := mariadb.GetInstance().Save(&models.Health{Status: value}).Error; err != nil {
 		panic(err)
 	}
 }

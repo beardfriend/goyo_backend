@@ -28,7 +28,7 @@ func GinRoutes(engine *gin.Engine) {
 		routes = append(routes, controller.Routes()...)
 	}
 
-	api := engine.Group("")
+	api := engine.Group("/api")
 
 	for _, route := range routes {
 		switch route.Method {

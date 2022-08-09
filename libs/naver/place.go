@@ -2,7 +2,9 @@ package naver
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/machinebox/graphql"
 )
 
@@ -42,6 +44,16 @@ type NaverPlaceItemDetail struct {
 	ImageUrl      *string `json:"imageUrl"`
 	X             string  `json:"x"`
 	Y             string  `json:"y"`
+}
+
+func (lib) MobileGet(naverId string) *resty.Response {
+	url := fmt.Sprintf("https://m.place.naver.com/place/%s/home", naverId)
+	client := resty.New()
+	resp, _ := client.R().
+		EnableTrace().
+		Get(url)
+
+	return resp
 }
 
 func (lib) Get(query *NaverPlaceQuery, result *NaverPlaceResult) error {

@@ -30,7 +30,7 @@ type GetListResponse struct {
 	Pagination common.PaginationInfo `json:"pagination"`
 }
 
-// --------------- DAO ---------------------
+// --------------- DTO ---------------------
 
 type NaverBasicInfoDTO struct {
 	Id            uint          `json:"id"`
@@ -42,9 +42,16 @@ type NaverBasicInfoDTO struct {
 	PhoneNum      *string       `json:"phoneNum"`
 	BusinessHours *string       `json:"businessHours"`
 	ImageUrl      *string       `json:"imageUrl"`
+	ThumbUrl      *string       `json:"thumbUrl"`
 	X             string        `json:"x"`
 	Y             string        `json:"y"`
 	YogaSorts     []YogaSortDTO `json:"yogaSorts" gorm:"foreignKey:NaverBasicInfoID"`
+}
+
+type NaverBasicInfoUpdateThumbUrlDTO struct {
+	Id       uint    `json:"id"`
+	NaverId  string  `json:"naver_id"`
+	ThumbUrl *string `json:"thumb_url,omitempty"`
 }
 
 type YogaSortDTO struct {

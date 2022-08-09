@@ -15,11 +15,11 @@ type Repo interface {
 type repo struct{}
 
 func (repo) GetYogaSort(name string, result *[]YogaSorts) error {
-	return mariadb.GetInstance().Select("distinct(name)").Model(&yoga.YogaSort{}).Group("name").Where("name LIKE ?", name+"%").Find(&result).Error
+	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSort{}).Group("name").Where("name LIKE ?", name+"%").Limit(6).Find(&result).Error
 }
 
 func (repo) GetYogaSortByCosonants(firstWord string, lastWord string, result *[]YogaSorts) error {
-	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSort{}).Group("name").Where("name >= ? AND name <= ?", firstWord, lastWord).Find(&result).Error
+	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSort{}).Group("name").Where("name >= ? AND name <= ?", firstWord, lastWord).Limit(6).Find(&result).Error
 }
 
 var (
