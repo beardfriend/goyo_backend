@@ -7,8 +7,8 @@ import (
 )
 
 type Lib interface {
-	Get(query *NaverPlaceQuery, result *NaverPlaceResult) error
-	MobileGet(naverId string) *resty.Response
+	GetPcPlaces(query *PcPlacesQuery, result *PcPlacesResult) error
+	GetMobilePlace(naverId string) *resty.Response
 }
 
 type lib struct{}

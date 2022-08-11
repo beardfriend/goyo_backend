@@ -8,7 +8,9 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-type NaverPlaceQuery struct {
+// ------------------- Query -------------------
+
+type PcPlacesQuery struct {
 	Query      string `json:"query"`
 	Start      int    `json:"start"`
 	Display    int    `json:"display"`
@@ -20,15 +22,17 @@ type NaverPlaceQuery struct {
 	Y          string `json:"y"`
 }
 
-type NaverPlaceResult struct {
-	Result NaverPlaceItem `json:"result"`
+// ------------------- Response -------------------
+
+type PcPlacesResult struct {
+	Result PcPlacesItem `json:"result"`
 }
 
-type NaverPlaceItem struct {
-	Items []NaverPlaceItemDetail `json:"items"`
+type PcPlacesItem struct {
+	Items []PcPlacesItemDetail `json:"items"`
 }
 
-type NaverPlaceItemDetail struct {
+type PcPlacesItemDetail struct {
 	Id            string  `json:"id"`       // 가게 아이디
 	Name          string  `json:"name"`     // 가게 이름
 	Category      string  `json:"category"` // 업종 카테고리
@@ -46,9 +50,13 @@ type NaverPlaceItemDetail struct {
 	Y             string  `json:"y"`
 }
 
-func (lib) MobileGet(naverId string) *resty.Response {
+// ------------------- API -------------------
+
+func (lib) GetMobilePlace(naverId string) *resty.Response {
 	url := fmt.Sprintf("https://m.place.naver.com/place/%s/home", naverId)
+
 	client := resty.New()
+
 	resp, _ := client.R().
 		EnableTrace().
 		Get(url)
@@ -56,8 +64,9 @@ func (lib) MobileGet(naverId string) *resty.Response {
 	return resp
 }
 
-func (lib) Get(query *NaverPlaceQuery, result *NaverPlaceResult) error {
+func (lib) GetPcPlaces(query *PcPlacesQuery, result *PcPlacesResult) error {
 	client := graphql.NewClient("https://pcmap-api.place.naver.com/place/graphql")
+
 	req := graphql.NewRequest(`
 	query getPlacesList($input: PlacesInput) {
 		result: places(input: $input) {
@@ -85,7 +94,9 @@ func (lib) Get(query *NaverPlaceQuery, result *NaverPlaceResult) error {
 	`)
 
 	req.Var("input", &query)
+
 	ctx := context.Background()
 	err := client.Run(ctx, req, &result)
+
 	return err
 }

@@ -4,7 +4,7 @@ import (
 	"goyo/modules/common"
 )
 
-// --------------- Request -------------------------
+// ------------------- Body -------------------
 type RegistRequestBody struct {
 	Year        string `json:"year" binding:"required"`
 	Month       string `json:"month" binding:"required"`
@@ -17,6 +17,7 @@ type RegistRequestBody struct {
 	TeacherName string `json:"teacherName"`
 }
 
+// ------------------- Query -------------------
 type GetListQuery struct {
 	YogaSort string `form:"yoga_sort"`
 	SiGunGu  string `form:"si_gun_gu"`
@@ -48,7 +49,7 @@ type NaverBasicInfoDTO struct {
 	YogaSorts     []YogaSortDTO `json:"yogaSorts" gorm:"foreignKey:NaverBasicInfoID"`
 }
 
-type NaverBasicInfoUpdateThumbUrlDTO struct {
+type CrawlMobileNaverPlaceDto struct {
 	Id       uint    `json:"id"`
 	NaverId  string  `json:"naver_id"`
 	ThumbUrl *string `json:"thumb_url,omitempty"`

@@ -6,10 +6,10 @@ import (
 	"goyo/models/yoga"
 )
 
-type NaverBasicInfo struct {
+type NaverPlace struct {
 	models.Model
 	TimeTable     []schedules.TimeTable
-	YogaSorts     []yoga.YogaSort `gorm:"foreignKey:NaverBasicInfoID"`
+	YogaSorts     []yoga.YogaSort `gorm:"foreignKey:NaverPlaceID"`
 	NaverId       string          `gorm:"column:naver_id; VARCHAR; NOT NULL; size:20; comment:네이버 고유 아이디"`
 	Name          string          `gorm:"column:name; index; VARCHAR; NOT NULL; size:100; comment: 학원 이름"`
 	Category      string          `gorm:"column:category; VARCHAR; NOT NULL; size:10; comment: 카테고리"`
@@ -24,6 +24,6 @@ type NaverBasicInfo struct {
 	Y             string          `gorm:"column:y; VARCHAR; size:100; comment: y좌표"`
 }
 
-func (NaverBasicInfo) TableName() string {
-	return "academy_naver_basic_info"
+func (NaverPlace) TableName() string {
+	return "academy_naver_place"
 }

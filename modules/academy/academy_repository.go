@@ -11,31 +11,34 @@ import (
 )
 
 type Repo interface {
-	FindNaverBasicInfo(naverId string) int64
-	InsertNaverBasicInfo(value *academy.NaverBasicInfo) error
+	FindNaverPlace(naverId string, result *academy.NaverPlace) (int64, error)
+	CreateNaverPlace(newData *academy.NaverPlace) error
 	GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDTO) error
 	GetAcademyTotalByYoga(query *GetListQuery, total *int64) error
-	FindNaverId(result *[]NaverBasicInfoUpdateThumbUrlDTO) error
+	GetNaverId(result interface{}) error
 	UpdateNaverBasicInfo(id uint, thumbUrl string) error
 }
 
 type repo struct{}
 
-func (repo) FindNaverBasicInfo(naverId string) int64 {
-	var result academy.NaverBasicInfo
-	return mariadb.GetInstance().Where("naver_id = ?", naverId).Find(&result).RowsAffected
+func (repo) FindNaverPlace(naverId string, result *academy.NaverPlace) (int64, error) {
+	query := mariadb.GetInstance().
+		Model(&academy.NaverPlace{}).
+		Where("naver_id = ?", naverId).Find(&result)
+
+	return query.RowsAffected, query.Error
 }
 
-func (repo) FindNaverId(result *[]NaverBasicInfoUpdateThumbUrlDTO) error {
-	return mariadb.GetInstance().Select("id, naver_id").Model(&academy.NaverBasicInfo{}).Where("thumb_url IS NOT NULL").Find(result).Error
+func (repo) GetNaverId(result interface{}) error {
+	return mariadb.GetInstance().Model(&academy.NaverPlace{}).Where("thumb_url IS NOT NULL").Find(&result).Error
 }
 
 func (repo) UpdateNaverBasicInfo(id uint, thumbUrl string) error {
-	return mariadb.GetInstance().Model(&academy.NaverBasicInfo{}).Where("id = ?", id).Update("thumb_url", thumbUrl).Error
+	return mariadb.GetInstance().Model(&academy.NaverPlace{}).Where("id = ?", id).Update("thumb_url", thumbUrl).Error
 }
 
-func (repo) InsertNaverBasicInfo(value *academy.NaverBasicInfo) error {
-	return mariadb.GetInstance().Create(&value).Error
+func (repo) CreateNaverPlace(newData *academy.NaverPlace) error {
+	return mariadb.GetInstance().Create(&newData).Error
 }
 
 func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {

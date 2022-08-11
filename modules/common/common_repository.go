@@ -8,15 +8,18 @@ import (
 )
 
 type CommonRepo interface {
-	Getgu(result *[]models.AdminiStrationDivision) error
+	GetAdminiStrationDivision(result *[]models.AdminiStrationDivision) error
 }
 
 type commonRepo struct{}
 
-func (commonRepo) Getgu(result *[]models.AdminiStrationDivision) error {
+// ------------------- AdminiStration -------------------
+
+func (commonRepo) GetAdminiStrationDivision(result *[]models.AdminiStrationDivision) error {
 	return mariadb.GetInstance().Find(&result).Error
 }
 
+// ------------------- SINGLETON -------------------
 var (
 	commonRepoInstance CommonRepo
 	repoOnce           sync.Once
