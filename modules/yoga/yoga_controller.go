@@ -1,6 +1,7 @@
 package yoga
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -12,6 +13,18 @@ import (
 )
 
 type YogaController struct{}
+
+func (YogaController) InsertYoga(c *gin.Context) {
+	ctx := context.Background()
+	if err := GetService().SyncSearchKeyword(ctx, "아쉬탕가", "아쉬탕가"); err != nil {
+		panic(err)
+	}
+
+	str, _ := GetService().GetSearchKeyword(ctx, "아")
+	fmt.Println(str)
+
+	common.SendOk(c, 200, "ok")
+}
 
 func (YogaController) GET(c *gin.Context) {
 	query := new(GetQuery)
@@ -58,7 +71,7 @@ func (YogaController) GET(c *gin.Context) {
 			panic(err)
 		}
 	} else {
-		if err := GetRepo().GetYogaSort(query.Name, &result); err != nil {
+		if err := GetRepo().GetYogaSortByName(query.Name, &result); err != nil {
 			panic(err)
 		}
 	}

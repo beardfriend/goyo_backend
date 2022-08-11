@@ -13,5 +13,10 @@ func (c YogaController) Routes() []common.Route {
 			Path:    "/yoga/category",
 			Handler: []gin.HandlerFunc{c.GET},
 		},
+		{
+			Method:  "POST",
+			Path:    "/yoga/category",
+			Handler: []gin.HandlerFunc{c.InsertYoga},
+		},
 	}
 }

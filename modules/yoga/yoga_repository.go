@@ -8,14 +8,18 @@ import (
 )
 
 type Repo interface {
-	GetYogaSort(name string, result *[]YogaSorts) error
+	GetYogaSortByName(name string, result *[]YogaSorts) error
 	GetYogaSortByCosonants(firstWord string, lastWord string, result *[]YogaSorts) error
 }
 
 type repo struct{}
 
-func (repo) GetYogaSort(name string, result *[]YogaSorts) error {
+func (repo) GetYogaSortByName(name string, result *[]YogaSorts) error {
 	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSort{}).Group("name").Where("name LIKE ?", name+"%").Limit(6).Find(&result).Error
+}
+
+func (repo) GetYogaSortDistinct(result *[]YogaSorts) error {
+	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSort{}).Find(&result).Error
 }
 
 func (repo) GetYogaSortByCosonants(firstWord string, lastWord string, result *[]YogaSorts) error {
