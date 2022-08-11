@@ -14,6 +14,20 @@ type HealthRepo interface {
 
 type healthRepo struct{}
 
+func (healthRepo) Insert(value string) {
+	if err := mariadb.GetInstance().Save(&models.Health{Status: value}).Error; err != nil {
+		panic(err)
+	}
+}
+
+func (healthRepo) Get(r *models.Health) {
+	if err := mariadb.GetInstance().First(&r).Error; err != nil {
+		panic(err)
+	}
+}
+
+// ------------------- SingleTon -------------------
+
 var (
 	singleton HealthRepo
 	once      sync.Once
@@ -28,21 +42,3 @@ func GetHealthRepo() HealthRepo {
 	})
 	return singleton
 }
-
-func (healthRepo) Insert(value string) {
-	if err := mariadb.GetInstance().Save(&models.Health{Status: value}).Error; err != nil {
-		panic(err)
-	}
-}
-
-func (healthRepo) Get(r *models.Health) {
-	if err := mariadb.GetInstance().First(&r).Error; err != nil {
-		panic(err)
-	}
-}
-
-//func SetHealthRepo(repo HealthRepo) HealthRepo {
-//	original := singleton
-//	singleton = repo
-//	return original
-//}

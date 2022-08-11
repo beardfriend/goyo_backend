@@ -41,6 +41,8 @@ func (repo) CreateNaverPlace(newData *academy.NaverPlace) error {
 	return mariadb.GetInstance().Create(&newData).Error
 }
 
+// ------------------- GetAcademyList -------------------
+
 func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 	clauses := make([]clause.Expression, 0)
 	if query.SiGunGu != "" {
@@ -111,6 +113,8 @@ func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDT
 		Group("a.id").
 		Find(&result).Error
 }
+
+// ------------------- SingleTon -------------------
 
 var (
 	repoInstance Repo

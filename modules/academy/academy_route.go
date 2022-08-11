@@ -15,7 +15,7 @@ func (c AcademyController) Routes() []common.Route {
 		},
 		{
 			Method:  "GET",
-			Path:    "/academy/list",
+			Path:    "/v1/academy/list",
 			Handler: []gin.HandlerFunc{c.GetList},
 		},
 		{

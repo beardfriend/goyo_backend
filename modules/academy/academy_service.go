@@ -168,6 +168,8 @@ func (service) NewGetListResponse(result []NaverBasicInfoDTO, total int64, query
 	return response
 }
 
+// ------------------- SingleTon -------------------
+
 var (
 	serviceInstance Serivce
 	serviceOnce     sync.Once

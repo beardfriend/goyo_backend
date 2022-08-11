@@ -15,6 +15,8 @@ func (repo) Post(model *schedules.TimeTable) error {
 	return mariadb.GetInstance().Create(&model).Error
 }
 
+// ------------------- SingleTon -------------------
+
 var (
 	repoInstance Repo
 	repoOnce     sync.Once

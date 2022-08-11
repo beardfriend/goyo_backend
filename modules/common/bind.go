@@ -8,18 +8,21 @@ import (
 )
 
 func BindJsonError(err error, structName string) string {
-	errorLog := fmt.Sprintf("%s", err)
-	arr := strings.Split(errorLog, "\n")
-	var result string
-	var errorArr []string
-	for _, v := range arr {
-		index := strings.Index(v, structName)
-		errorindex := strings.Index(v, "Error")
-		arr := strings.Split(v[index:errorindex], ".")
-		str := strings.Replace(arr[1], "'", "", 1)
-		last := strcase.ToLowerCamel(str)
-		errorArr = append(errorArr, last)
+	errorMessage := fmt.Sprintf("%s", err)
+
+	splitMessage := strings.Split(errorMessage, "\n")
+
+	var errorMessageArray []string
+
+	for _, v := range splitMessage {
+		indexStructNameStart := strings.Index(v, structName)
+		indexErrorStart := strings.Index(v, "Error")
+
+		commaSplit := strings.Split(v[indexStructNameStart:indexErrorStart], ".")
+		message := strings.Replace(commaSplit[1], "'", "", 1)
+		messageValue := strcase.ToLowerCamel(message)
+
+		errorMessageArray = append(errorMessageArray, messageValue)
 	}
-	result = strings.Join(errorArr, ",")
-	return result
+	return strings.Join(errorMessageArray, ",")
 }

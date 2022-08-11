@@ -26,6 +26,8 @@ func (repo) GetYogaSortByCosonants(firstWord string, lastWord string, result *[]
 	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSort{}).Group("name").Where("name >= ? AND name <= ?", firstWord, lastWord).Limit(6).Find(&result).Error
 }
 
+// ------------------- SingleTon -------------------
+
 var (
 	repoInstance Repo
 	repoOnce     sync.Once

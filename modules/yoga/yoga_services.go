@@ -22,6 +22,8 @@ func (service) GetSearchKeyword(c context.Context, key string) ([]string, error)
 	return redis.GetInstance().Keys(c, "*"+key+"*").Result()
 }
 
+// ------------------- SingleTon -------------------
+
 var (
 	serviceInstance Serivce
 	serviceOnce     sync.Once
