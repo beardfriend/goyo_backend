@@ -6,6 +6,9 @@ import (
 	"sync"
 
 	"goyo/libs"
+	"goyo/models/naver"
+	"goyo/models/schedule"
+	"goyo/models/yoga"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -30,4 +33,8 @@ func GetInstance() *gorm.DB {
 		instance = db
 	})
 	return instance
+}
+
+func TableGenerate() {
+	GetInstance().AutoMigrate(&naver.NaverPlace{}, &schedule.Schedule{}, &yoga.YogaSorts{})
 }

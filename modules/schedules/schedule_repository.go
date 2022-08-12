@@ -3,7 +3,7 @@ package schedule
 import (
 	"sync"
 
-	"goyo/models/schedules"
+	"goyo/models/schedule"
 	"goyo/server/mariadb"
 )
 
@@ -11,7 +11,7 @@ type Repo interface{}
 
 type repo struct{}
 
-func (repo) Post(model *schedules.TimeTable) error {
+func (repo) Post(model *schedule.Schedule) error {
 	return mariadb.GetInstance().Create(&model).Error
 }
 

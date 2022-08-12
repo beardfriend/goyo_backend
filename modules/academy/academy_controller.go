@@ -29,7 +29,7 @@ func (AcademyController) GetList(c *gin.Context) {
 		common.SendError(c, 400, errorMessage+" 를 입력해주세요")
 	}
 
-	var academyList []NaverBasicInfoDTO
+	var academyList []NaverPlaceDTO
 	if err := GetRepo().GetAcademyListByYoga(query, &academyList); err != nil {
 		panic(err)
 	}

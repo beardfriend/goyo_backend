@@ -1,7 +1,7 @@
 package users
 
 type Social struct {
-	User   User `gorm:"foreignkey:Id"`
+	Users  Users `gorm:"foreignkey:Id"`
 	Id     uint
 	Type   int8   `gorm:"comment:1.카카오 2.구글"`
 	Secret string `gorm:"size:100"`

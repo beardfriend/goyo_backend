@@ -4,16 +4,16 @@ import (
 	"strings"
 	"sync"
 
-	"goyo/models/academy"
+	"goyo/models/naver"
 	"goyo/server/mariadb"
 
 	"gorm.io/gorm/clause"
 )
 
 type Repo interface {
-	FindNaverPlace(naverId string, result *academy.NaverPlace) (int64, error)
-	CreateNaverPlace(newData *academy.NaverPlace) error
-	GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDTO) error
+	FindNaverPlace(naverId string, result *naver.NaverPlace) (int64, error)
+	CreateNaverPlace(newData *naver.NaverPlace) error
+	GetAcademyListByYoga(query *GetListQuery, result *[]NaverPlaceDTO) error
 	GetAcademyTotalByYoga(query *GetListQuery, total *int64) error
 	GetNaverId(result interface{}) error
 	UpdateNaverBasicInfo(id uint, thumbUrl string) error
@@ -21,23 +21,23 @@ type Repo interface {
 
 type repo struct{}
 
-func (repo) FindNaverPlace(naverId string, result *academy.NaverPlace) (int64, error) {
+func (repo) FindNaverPlace(naverId string, result *naver.NaverPlace) (int64, error) {
 	query := mariadb.GetInstance().
-		Model(&academy.NaverPlace{}).
+		Model(&naver.NaverPlace{}).
 		Where("naver_id = ?", naverId).Find(&result)
 
 	return query.RowsAffected, query.Error
 }
 
 func (repo) GetNaverId(result interface{}) error {
-	return mariadb.GetInstance().Model(&academy.NaverPlace{}).Where("thumb_url IS NOT NULL").Find(&result).Error
+	return mariadb.GetInstance().Model(&naver.NaverPlace{}).Where("thumb_url IS NOT NULL").Find(&result).Error
 }
 
 func (repo) UpdateNaverBasicInfo(id uint, thumbUrl string) error {
-	return mariadb.GetInstance().Model(&academy.NaverPlace{}).Where("id = ?", id).Update("thumb_url", thumbUrl).Error
+	return mariadb.GetInstance().Model(&naver.NaverPlace{}).Where("id = ?", id).Update("thumb_url", thumbUrl).Error
 }
 
-func (repo) CreateNaverPlace(newData *academy.NaverPlace) error {
+func (repo) CreateNaverPlace(newData *naver.NaverPlace) error {
 	return mariadb.GetInstance().Create(&newData).Error
 }
 
@@ -65,14 +65,14 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 	return mariadb.GetInstance().
 		Debug().
 		Clauses(clauses...).
-		Table("academy_naver_basic_info a").
+		Table("academy_naver_place a").
 		Select("count(a.id) as total").
-		Joins("JOIN yoga_sort b ON a.id = b.naver_basic_info_id").
+		Joins("JOIN yoga_sort b ON a.id = b.naver_place_id").
 		Group("a.id").
 		Count(total).Error
 }
 
-func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDTO) error {
+func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverPlaceDTO) error {
 	clauses := make([]clause.Expression, 0)
 	offset := 0
 	limit := 10
@@ -107,9 +107,9 @@ func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverBasicInfoDT
 		Debug().
 		Clauses(clauses...).
 		Preload("YogaSorts").
-		Table("academy_naver_basic_info a").
+		Table("academy_naver_place a").
 		Select("a.*").
-		Joins("JOIN yoga_sort b ON a.id = b.naver_basic_info_id").
+		Joins("JOIN yoga_sort b ON a.id = b.naver_place_id").
 		Group("a.id").
 		Find(&result).Error
 }

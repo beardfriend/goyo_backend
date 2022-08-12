@@ -1,7 +1,7 @@
 package users
 
 type Normal struct {
-	User     User `gorm:"foreignkey:Id"`
+	Users    Users `gorm:"foreignkey:Id"`
 	Id       uint
 	Email    string `gorm:"size40"`
 	Password string `gorm:"size50"`

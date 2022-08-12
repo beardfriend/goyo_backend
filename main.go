@@ -5,6 +5,7 @@ import (
 
 	"goyo/libs"
 	"goyo/server"
+	"goyo/server/mariadb"
 )
 
 func main() {
@@ -13,6 +14,6 @@ func main() {
 		log.Fatalln(err)
 	}
 	libs.ReadEnv(mode)
-
+	mariadb.TableGenerate()
 	server.InitGin()
 }

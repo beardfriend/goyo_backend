@@ -27,13 +27,13 @@ type GetListQuery struct {
 
 // -------------- Response ---------------------
 type GetListResponse struct {
-	List       []NaverBasicInfoDTO   `json:"list"`
+	List       []NaverPlaceDTO       `json:"list"`
 	Pagination common.PaginationInfo `json:"pagination"`
 }
 
 // --------------- DTO ---------------------
 
-type NaverBasicInfoDTO struct {
+type NaverPlaceDTO struct {
 	Id            uint          `json:"id"`
 	Name          string        `json:"name"`
 	Category      string        `json:"category"`

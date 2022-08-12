@@ -9,7 +9,7 @@ import (
 
 	"goyo/libs/naver"
 	"goyo/models"
-	"goyo/models/academy"
+	nmodel "goyo/models/naver"
 	"goyo/modules/common"
 
 	"github.com/PuerkitoBio/goquery"
@@ -20,7 +20,7 @@ type Serivce interface {
 	CrawlNaverPlaces()
 	CrawlMobileNaverPlace()
 	// Response
-	NewGetListResponse(result []NaverBasicInfoDTO, total int64, query *GetListQuery) GetListResponse
+	NewGetListResponse(result []NaverPlaceDTO, total int64, query *GetListQuery) GetListResponse
 }
 
 type service struct{}
@@ -79,7 +79,7 @@ func (service) CrawlNaverPlaces() {
 					continue
 				}
 
-				newPlaceData := academy.NaverPlace{
+				newPlaceData := nmodel.NaverPlace{
 					NaverId:       v.Id,
 					Name:          v.Name,
 					Category:      v.Category,
@@ -152,12 +152,15 @@ func (service) CrawlMobileNaverPlace() {
 
 // ------------------- Response -------------------
 
-func (service) NewGetListResponse(result []NaverBasicInfoDTO, total int64, query *GetListQuery) GetListResponse {
+func (service) NewGetListResponse(result []NaverPlaceDTO, total int64, query *GetListQuery) GetListResponse {
 	var response GetListResponse
-
+	pageCount := total/int64(query.RowCount) + 1
+	if total%int64(query.RowCount) == 0 {
+		pageCount = total / int64(query.RowCount)
+	}
 	pageInfo := common.PaginationInfo{
 		PageSize:  len(result),
-		PageCount: total/int64(query.RowCount) + 1,
+		PageCount: pageCount,
 		Page:      int64(query.PageNo),
 		RowCount:  total,
 	}
