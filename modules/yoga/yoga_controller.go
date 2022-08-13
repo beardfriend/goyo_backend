@@ -1,8 +1,6 @@
 package yoga
 
 import (
-	"context"
-	"fmt"
 	"unicode/utf8"
 
 	"goyo/modules/common"
@@ -11,18 +9,6 @@ import (
 )
 
 type YogaController struct{}
-
-func (YogaController) InsertYoga(c *gin.Context) {
-	ctx := context.Background()
-	if err := GetService().SyncSearchKeyword(ctx, "아쉬탕가", "아쉬탕가"); err != nil {
-		panic(err)
-	}
-
-	str, _ := GetService().GetSearchKeyword(ctx, "아")
-	fmt.Println(str)
-
-	common.SendOk(c, 200, "ok")
-}
 
 func (YogaController) GetSorts(c *gin.Context) {
 	// Get Query And Validate

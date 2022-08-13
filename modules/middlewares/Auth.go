@@ -12,6 +12,7 @@ func ValidateAPIkey(c *gin.Context) {
 
 	if APIKey == libs.ENV.API.Goyo {
 		c.Next()
+		return
 	}
 	common.SendError(c, 401, "API KEY 인증을 다시 확인해주세요")
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"goyo/modules/academy"
+	"goyo/modules/admin"
 	"goyo/modules/common"
 	"goyo/modules/health"
 	"goyo/modules/yoga"
@@ -20,6 +21,7 @@ func GinRoutes(engine *gin.Engine) {
 		health.HealthController{},
 		academy.AcademyController{},
 		yoga.YogaController{},
+		admin.AdminController{},
 	}
 
 	var routes []common.Route

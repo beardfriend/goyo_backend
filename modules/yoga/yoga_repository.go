@@ -10,20 +10,45 @@ import (
 type Repo interface {
 	GetSortsByName(name string, result *[]SortsDTO) error
 	GetSortsByCosonants(firstWord string, lastWord string, result *[]SortsDTO) error
+	CreateSorts(value *[]CreateSortsDTO) error
 }
 
 type repo struct{}
 
+// ------------------- Get -------------------
+
 func (repo) GetSortsByName(name string, result *[]SortsDTO) error {
-	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSorts{}).Group("name").Where("name LIKE ?", name+"%").Limit(6).Find(&result).Error
+	return mariadb.GetInstance().
+		Select("distinct(name)").
+		Model(&yoga.YogaSorts{}).
+		Where("name LIKE ?", name+"%").
+		Group("name").
+		Limit(6).
+		Find(&result).Error
 }
 
 func (repo) GetYogaSortDistinct(result *[]SortsDTO) error {
-	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSorts{}).Find(&result).Error
+	return mariadb.GetInstance().
+		Select("distinct(name)").
+		Model(&yoga.YogaSorts{}).
+		Find(&result).Error
 }
 
 func (repo) GetSortsByCosonants(firstWord string, lastWord string, result *[]SortsDTO) error {
-	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSorts{}).Group("name").Where("name >= ? AND name <= ?", firstWord, lastWord).Limit(6).Find(&result).Error
+	return mariadb.GetInstance().
+		Select("distinct(name)").
+		Model(&yoga.YogaSorts{}).
+		Where("name >= ? AND name <= ?", firstWord, lastWord).
+		Group("name").
+		Limit(6).
+		Find(&result).Error
+}
+
+// ------------------- Create -------------------
+
+func (repo) CreateSorts(value *[]CreateSortsDTO) error {
+	return mariadb.GetInstance().
+		Create(&value).Error
 }
 
 // ------------------- SingleTon -------------------

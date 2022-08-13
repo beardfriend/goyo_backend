@@ -16,6 +16,7 @@ type Serivce interface {
 	CheckContainConsonants(nameLength int, name string) string
 	MakeSearchKeywordForConsonants(nameLength int, name string) (string, string)
 	NewSortsList(value []SortsDTO) []GetSortsResponse
+	NewSortsDTO(value InsertSortsBody) []CreateSortsDTO
 }
 
 type service struct{}
@@ -66,6 +67,19 @@ func (service) MakeSearchKeywordForConsonants(nameLength int, name string) (stri
 	to := strings.Trim(name, lastWord) + toArr[lastWord]
 
 	return from, to
+}
+
+// ------------------- DTO -------------------
+
+func (service) NewSortsDTO(value InsertSortsBody) []CreateSortsDTO {
+	var result []CreateSortsDTO
+	for _, v := range value.Value {
+		result = append(result, CreateSortsDTO{
+			NaverPlaceId: v.NaverPlaceID,
+			Name:         v.Name,
+		})
+	}
+	return result
 }
 
 // ------------------- Repsonse -------------------
