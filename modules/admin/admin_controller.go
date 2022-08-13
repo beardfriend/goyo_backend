@@ -17,9 +17,13 @@ func (AdminController) GetAcademyListThatHanstTag(c *gin.Context) {
 	if err := c.ShouldBindQuery(query); err != nil {
 		common.SendError(c, 400, "QueryString을 확인해주세요")
 	}
+	var total int64
+
+	academy.GetRepo().GetListThatHasnTagTotal(query, &total)
+
 	result := make([]academy.NaverPlaceDTO, 0)
 	academy.GetRepo().GetListThatHasntTag(query, &result)
-	common.SendResult(c, 200, "ok", result)
+	common.SendResult(c, 200, "ok", gin.H{"list": result, "total": total})
 }
 
 func (AdminController) InsertYogaSorts(c *gin.Context) {
