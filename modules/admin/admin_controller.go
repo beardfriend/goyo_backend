@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"goyo/models"
 	"goyo/modules/academy"
 	"goyo/modules/common"
 	"goyo/modules/yoga"
@@ -11,8 +12,11 @@ import (
 type AdminController struct{}
 
 func (AdminController) GetAcademyListThatHanstTag(c *gin.Context) {
-	query := new(academy.GetListQuery)
+	query := new(academy.AcademyListRequest)
 
+	if err := c.ShouldBindQuery(query); err != nil {
+		common.SendError(c, 400, "QueryString을 확인해주세요")
+	}
 	result := make([]academy.NaverPlaceDTO, 0)
 	academy.GetRepo().GetListThatHasntTag(query, &result)
 	common.SendResult(c, 200, "ok", result)
@@ -32,4 +36,14 @@ func (AdminController) InsertYogaSorts(c *gin.Context) {
 	}
 
 	common.SendOk(c, 201, "success")
+}
+
+func (AdminController) GetAdministrations(c *gin.Context) {
+	var result []models.AdminiStrationDivision
+	common.GetCommonRepo().GetAdminiStrationDivision(&result)
+
+	response := new(common.AdminiStrationsResponse)
+	response.List = result
+
+	common.SendResult(c, 200, "ok", response)
 }

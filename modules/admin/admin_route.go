@@ -19,5 +19,10 @@ func (c AdminController) Routes() []common.Route {
 			Path:    "/admin/yoga/sorts",
 			Handler: []gin.HandlerFunc{c.InsertYogaSorts},
 		},
+		{
+			Method:  "GET",
+			Path:    "/admin/administrations",
+			Handler: []gin.HandlerFunc{c.GetAdministrations},
+		},
 	}
 }

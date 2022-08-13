@@ -24,7 +24,11 @@ func InitEcho() {
 
 func InitGin() {
 	server := gin.Default()
-	server.Use(cors.Default())
+	server.Use(cors.New(cors.Config{
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{"X-API-Key"},
+	}))
 	server.Use(middlewares.ErrorHandleRecovery())
 	GinRoutes(server)
 	server.Run(":8000")
