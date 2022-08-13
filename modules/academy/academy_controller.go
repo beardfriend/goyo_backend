@@ -22,6 +22,7 @@ func (AcademyController) UpdateThumbUrl(c *gin.Context) {
 	common.SendOk(c, http.StatusOK, "ok")
 }
 
+// 네이버 플레이스 학원 리스트 조회
 func (AcademyController) GetList(c *gin.Context) {
 	query := new(GetListQuery)
 	if err := c.ShouldBindQuery(&query); err != nil {

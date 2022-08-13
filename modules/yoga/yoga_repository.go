@@ -8,21 +8,21 @@ import (
 )
 
 type Repo interface {
-	GetYogaSortByName(name string, result *[]YogaSorts) error
-	GetYogaSortByCosonants(firstWord string, lastWord string, result *[]YogaSorts) error
+	GetSortsByName(name string, result *[]SortsDTO) error
+	GetSortsByCosonants(firstWord string, lastWord string, result *[]SortsDTO) error
 }
 
 type repo struct{}
 
-func (repo) GetYogaSortByName(name string, result *[]YogaSorts) error {
+func (repo) GetSortsByName(name string, result *[]SortsDTO) error {
 	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSorts{}).Group("name").Where("name LIKE ?", name+"%").Limit(6).Find(&result).Error
 }
 
-func (repo) GetYogaSortDistinct(result *[]YogaSorts) error {
+func (repo) GetYogaSortDistinct(result *[]SortsDTO) error {
 	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSorts{}).Find(&result).Error
 }
 
-func (repo) GetYogaSortByCosonants(firstWord string, lastWord string, result *[]YogaSorts) error {
+func (repo) GetSortsByCosonants(firstWord string, lastWord string, result *[]SortsDTO) error {
 	return mariadb.GetInstance().Debug().Select("distinct(name)").Model(&yoga.YogaSorts{}).Group("name").Where("name >= ? AND name <= ?", firstWord, lastWord).Limit(6).Find(&result).Error
 }
 

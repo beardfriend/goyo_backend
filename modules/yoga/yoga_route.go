@@ -11,7 +11,7 @@ func (c YogaController) Routes() []common.Route {
 		{
 			Method:  "GET",
 			Path:    "/v1/yoga/category",
-			Handler: []gin.HandlerFunc{c.GET},
+			Handler: []gin.HandlerFunc{c.GetSorts},
 		},
 		{
 			Method:  "POST",

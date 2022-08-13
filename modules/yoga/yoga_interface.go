@@ -2,7 +2,7 @@ package yoga
 
 // --------- Response -----------
 
-type GetResponse struct {
+type GetSortsResponse struct {
 	Id   uint   `json:"id"`
 	Name string `json:"name"`
 }
@@ -13,7 +13,11 @@ type GetQuery struct {
 
 // ---------- DTO ---------------
 
-type YogaSorts struct {
+type SortsDTO struct {
 	Id   uint   `json:"id"`
 	Name string `json:"name"`
+}
+
+func (SortsDTO) TableName() string {
+	return `yoga_sorts`
 }
