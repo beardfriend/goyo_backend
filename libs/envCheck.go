@@ -26,7 +26,7 @@ type Database struct {
 }
 
 type API struct {
-	ThisProject string
+	Goyo string
 }
 
 type Redis struct {
@@ -81,7 +81,7 @@ func ReadEnv(mode string) {
 	}
 
 	env_api := &API{
-		ThisProject: result["API_THISPROJECT"],
+		Goyo: result["API_GOYO"],
 	}
 
 	env_redis := &Redis{
