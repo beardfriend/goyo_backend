@@ -154,13 +154,10 @@ func (service) CrawlMobileNaverPlace() {
 
 func (service) NewGetListResponse(result []NaverPlaceDTO, total int64, query *GetListQuery) GetListResponse {
 	var response GetListResponse
-	pageCount := total/int64(query.RowCount) + 1
-	if total%int64(query.RowCount) == 0 {
-		pageCount = total / int64(query.RowCount)
-	}
+
 	pageInfo := common.PaginationInfo{
 		PageSize:  len(result),
-		PageCount: pageCount,
+		PageCount: (total / int64(query.RowCount)) + (total % int64(query.RowCount)),
 		Page:      int64(query.PageNo),
 		RowCount:  total,
 	}

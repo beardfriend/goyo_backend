@@ -46,7 +46,7 @@ type NaverPlaceDTO struct {
 	ThumbUrl      *string       `json:"thumbUrl"`
 	X             string        `json:"x"`
 	Y             string        `json:"y"`
-	YogaSorts     []YogaSortDTO `json:"yogaSorts" gorm:"foreignKey:NaverBasicInfoID"`
+	YogaSorts     []YogaSortDTO `json:"yogaSorts" gorm:"foreignKey:NaverPlaceID"`
 }
 
 type CrawlMobileNaverPlaceDto struct {
@@ -56,10 +56,10 @@ type CrawlMobileNaverPlaceDto struct {
 }
 
 type YogaSortDTO struct {
-	NaverBasicInfoID uint   `json:"-"`
-	Name             string `json:"name"`
+	NaverPlaceID uint   `json:"-"`
+	Name         string `json:"name"`
 }
 
 func (YogaSortDTO) TableName() string {
-	return `yoga_sort`
+	return `yoga_sorts`
 }

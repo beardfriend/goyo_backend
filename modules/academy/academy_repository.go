@@ -65,9 +65,9 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 	return mariadb.GetInstance().
 		Debug().
 		Clauses(clauses...).
-		Table("academy_naver_place a").
+		Table("naver_place a").
 		Select("count(a.id) as total").
-		Joins("JOIN yoga_sort b ON a.id = b.naver_place_id").
+		Joins("JOIN yoga_sorts b ON a.id = b.naver_place_id").
 		Group("a.id").
 		Count(total).Error
 }
@@ -107,9 +107,9 @@ func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverPlaceDTO) e
 		Debug().
 		Clauses(clauses...).
 		Preload("YogaSorts").
-		Table("academy_naver_place a").
+		Table("naver_place a").
 		Select("a.*").
-		Joins("JOIN yoga_sort b ON a.id = b.naver_place_id").
+		Joins("JOIN yoga_sorts b ON a.id = b.naver_place_id").
 		Group("a.id").
 		Find(&result).Error
 }
