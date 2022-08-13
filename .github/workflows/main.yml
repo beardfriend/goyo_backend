@@ -1,20 +1,16 @@
-name: remote ssh command
-on: [push]
-jobs:
-
-  build:
-    name: Build
-    runs-on: ubuntu-18.04
-    steps:
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        proxy_host: ${{ secrets.HOST }}
-        proxy_username: ${{ secrets.USERNAME }}
-        proxy_password: ${{ secrets.PASSWORD }}
-        proxy_port: ${{ secrets.PORT }}
-        script: whoami
+  name: CI
+  on:
+    push:
+      branches: [ main ]
+    pull_request:
+      branches: [ main ]
+  jobs:
+    access_test:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: sshPass install
+        run : sudo apt-get install -y sshpass
+      - name: access Server
+        shell: bash
+        run: ${{ secrets.ACCESS_TEST }}
