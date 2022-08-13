@@ -14,3 +14,6 @@
       - name: access Server
         shell: bash
         run: ${{ secrets.ACCESS_TEST }}
+      - name: check
+        shell: bash
+        run : ls -al
