@@ -9,6 +9,10 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
         proxy_host: ${{ secrets.HOST }}
         proxy_username: ${{ secrets.USERNAME }}
         proxy_password: ${{ secrets.PASSWORD }}
