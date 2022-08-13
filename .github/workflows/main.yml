@@ -4,13 +4,13 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
+        proxy_host: ${{ secrets.HOST }}
+        proxy_username: ${{ secrets.USERNAME }}
+        proxy_password: ${{ secrets.PASSWORD }}
+        proxy_port: ${{ secrets.PORT }}
         script: whoami
