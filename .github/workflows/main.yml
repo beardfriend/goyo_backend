@@ -8,10 +8,9 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with: 
