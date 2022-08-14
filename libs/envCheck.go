@@ -55,6 +55,7 @@ func ReadEnv(mode string) {
 	var result map[string]string
 	var error error
 	if mode == "production" {
+
 		str, err := godotenv.Read("./.env.prod")
 		result = str
 		error = err
@@ -63,7 +64,8 @@ func ReadEnv(mode string) {
 		str, err := godotenv.Read("../../.env.dev")
 		result = str
 		error = err
-	} else {
+	}
+	if mode == "" || mode == "development" {
 		str, err := godotenv.Read("./.env.dev")
 		result = str
 		error = err

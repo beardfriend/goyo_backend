@@ -7,6 +7,7 @@ import (
 	"goyo/modules/academy"
 	"goyo/server/mariadb"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -124,7 +125,9 @@ func (repo) GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *i
 
 func (repo) GetDetail(naverId *uint64, result *NaverPlaceDTO) error {
 	return mariadb.GetInstance().
-		Preload("YogaSorts").
+		Preload("YogaSorts", func(db *gorm.DB) *gorm.DB {
+			return db.Order("yoga_sorts.name")
+		}).
 		Select("id, name").
 		Model(&naver.NaverPlace{}).
 		Where("id = ?", naverId).
