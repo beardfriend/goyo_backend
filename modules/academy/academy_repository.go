@@ -16,7 +16,7 @@ type Repo interface {
 	CreateNaverPlace(newData *naver.NaverPlace) error
 	GetAcademyListByYoga(query *GetListQuery, result *[]NaverPlaceDTO) error
 	GetAcademyTotalByYoga(query *GetListQuery, total *int64) error
-	GetNaverId(result interface{}) error
+	GetNaverId(result *[]CrawlMobileNaverPlaceDto) error
 	UpdateNaverBasicInfo(id uint, thumbUrl string) error
 }
 
@@ -34,8 +34,8 @@ func (repo) FindNaverPlace(naverId string, result *naver.NaverPlace) (int64, err
 
 // ------------------- Get -------------------
 
-func (repo) GetNaverId(result interface{}) error {
-	return mariadb.GetInstance().Model(&naver.NaverPlace{}).Where("thumb_url IS NOT NULL").Find(&result).Error
+func (repo) GetNaverId(result *[]CrawlMobileNaverPlaceDto) error {
+	return mariadb.GetInstance().Model(&naver.NaverPlace{}).Where("thumb_url IS NULL").Find(&result).Error
 }
 
 func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {

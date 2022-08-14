@@ -137,7 +137,7 @@ func (service) CrawlMobileNaverPlace() {
 		// Slice "
 		indexFromQuotationMark := strings.Index(imageUrlWithQuotationMark, "\"")
 
-		imgUrl := styleValue[:indexFromQuotationMark]
+		imgUrl := imageUrlWithQuotationMark[:indexFromQuotationMark]
 		decodedUrl, _ := netUrl.QueryUnescape(imgUrl)
 		result := decodedUrl
 
