@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"strconv"
+
 	"goyo/models"
 	"goyo/modules/academy"
 	"goyo/modules/common"
@@ -19,11 +21,21 @@ func (AdminController) GetAcademyListThatHanstTag(c *gin.Context) {
 	}
 	var total int64
 
-	academy.GetRepo().GetListThatHasnTagTotal(query, &total)
+	GetRepo().GetListThatHasnTagTotal(query, &total)
 
-	result := make([]academy.NaverPlaceDTO, 0)
-	academy.GetRepo().GetListThatHasntTag(query, &result)
+	result := make([]NaverPlaceDTO, 0)
+	GetRepo().GetListThatHasntTag(query, &result)
 	common.SendResult(c, 200, "ok", gin.H{"list": result, "total": total})
+}
+
+func (AdminController) GetAcademyDetail(c *gin.Context) {
+	idParam := c.Param("naver_id")
+	id, _ := strconv.ParseUint(idParam, 10, 64)
+
+	var result NaverPlaceDTO
+	GetRepo().GetDetail(&id, &result)
+
+	common.SendResult(c, 200, "ok", result)
 }
 
 func (AdminController) InsertYogaSorts(c *gin.Context) {

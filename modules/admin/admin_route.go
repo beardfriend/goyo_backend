@@ -17,12 +17,17 @@ func (c AdminController) Routes() []common.Route {
 		{
 			Method:  "POST",
 			Path:    "/admin/yoga/sorts",
-			Handler: []gin.HandlerFunc{c.InsertYogaSorts},
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.InsertYogaSorts},
 		},
 		{
 			Method:  "GET",
 			Path:    "/admin/administrations",
 			Handler: []gin.HandlerFunc{c.GetAdministrations},
+		},
+		{
+			Method:  "GET",
+			Path:    "/admin/academy/:naver_id",
+			Handler: []gin.HandlerFunc{c.GetAcademyDetail},
 		},
 	}
 }

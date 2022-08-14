@@ -27,7 +27,7 @@ func InitGin() {
 	server.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{"X-API-Key"},
+		AllowHeaders: []string{"X-API-Key", "Content-Type"},
 	}))
 	server.Use(middlewares.ErrorHandleRecovery())
 	GinRoutes(server)

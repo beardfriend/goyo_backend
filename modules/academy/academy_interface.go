@@ -29,9 +29,8 @@ type AcademyListRequest struct {
 	SiGunGu           string `form:"si_gun_gu"`
 	PageNo            int    `form:"page_no,default=1"`
 	RowCount          int    `form:"row_count,default=10"`
-	IsRegist          bool   `form:"is_regist,default=false"`
+	Status            string `form:"status,default=false"`
 	ContainMeditation bool   `form:"contain_meditation,default=false"`
-	BeforeTenMin      bool   `form:"before_ten_min,default=true"`
 }
 
 // -------------- Response ---------------------
@@ -65,7 +64,7 @@ type CrawlMobileNaverPlaceDto struct {
 }
 
 type YogaSortDTO struct {
-	NaverPlaceID uint   `json:"-"`
+	NaverPlaceID uint   `json:"id"`
 	Name         string `json:"name"`
 }
 
