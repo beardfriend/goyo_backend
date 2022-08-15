@@ -23,7 +23,8 @@ func (repo) GetSortsByName(name string, result *[]SortsDTO) error {
 		Model(&yoga.YogaSorts{}).
 		Where("name LIKE ?", name+"%").
 		Group("name").
-		Limit(6).
+		Limit(8).
+		Order("RAND ()").
 		Find(&result).Error
 }
 
@@ -40,7 +41,8 @@ func (repo) GetSortsByCosonants(firstWord string, lastWord string, result *[]Sor
 		Model(&yoga.YogaSorts{}).
 		Where("name >= ? AND name <= ?", firstWord, lastWord).
 		Group("name").
-		Limit(6).
+		Limit(8).
+		Order("RAND ()").
 		Find(&result).Error
 }
 

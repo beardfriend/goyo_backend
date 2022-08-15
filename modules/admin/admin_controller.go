@@ -2,6 +2,7 @@ package admin
 
 import (
 	"strconv"
+	"strings"
 
 	"goyo/models"
 	"goyo/modules/academy"
@@ -32,7 +33,7 @@ func (AdminController) GetAcademyDetail(c *gin.Context) {
 	idParam := c.Param("naver_id")
 	id, _ := strconv.ParseUint(idParam, 10, 64)
 
-	var result NaverPlaceDTO
+	var result GetDetailNaverPlaceDTO
 	GetRepo().GetDetail(&id, &result)
 
 	common.SendResult(c, 200, "ok", result)
@@ -62,4 +63,21 @@ func (AdminController) GetAdministrations(c *gin.Context) {
 	response.List = result
 
 	common.SendResult(c, 200, "ok", response)
+}
+
+func (AdminController) DeleteTag(c *gin.Context) {
+	idParam := c.Param("naver_id")
+
+	result := strings.Split(idParam, ",")
+	var idList []uint64
+	for _, v := range result {
+		id, _ := strconv.ParseUint(v, 10, 64)
+		idList = append(idList, id)
+	}
+
+	if err := GetRepo().DeleteSorts(&idList); err != nil {
+		panic(err)
+	}
+
+	common.SendOk(c, 200, "ok")
 }

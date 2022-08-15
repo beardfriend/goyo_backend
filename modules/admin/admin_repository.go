@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"goyo/models/naver"
+	"goyo/models/yoga"
 	"goyo/modules/academy"
 	"goyo/server/mariadb"
 
@@ -14,7 +15,8 @@ import (
 type Repo interface {
 	GetListThatHasntTag(query *academy.AcademyListRequest, result *[]NaverPlaceDTO) error
 	GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *int64) error
-	GetDetail(naverId *uint64, result *NaverPlaceDTO) error
+	GetDetail(naverId *uint64, result *GetDetailNaverPlaceDTO) error
+	DeleteSorts(idList *[]uint64) error
 }
 
 type repo struct{}
@@ -123,15 +125,19 @@ func (repo) GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *i
 		Count(result).Error
 }
 
-func (repo) GetDetail(naverId *uint64, result *NaverPlaceDTO) error {
+func (repo) GetDetail(naverId *uint64, result *GetDetailNaverPlaceDTO) error {
 	return mariadb.GetInstance().
 		Preload("YogaSorts", func(db *gorm.DB) *gorm.DB {
 			return db.Order("yoga_sorts.name")
 		}).
-		Select("id, name").
 		Model(&naver.NaverPlace{}).
 		Where("id = ?", naverId).
 		Find(&result).Error
+}
+
+func (repo) DeleteSorts(idList *[]uint64) error {
+	return mariadb.GetInstance().Debug().
+		Delete(&yoga.YogaSorts{}, idList).Error
 }
 
 func GetRepo() Repo {

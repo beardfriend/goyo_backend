@@ -29,5 +29,10 @@ func (c AdminController) Routes() []common.Route {
 			Path:    "/admin/academy/:naver_id",
 			Handler: []gin.HandlerFunc{c.GetAcademyDetail},
 		},
+		{
+			Method:  "DELETE",
+			Path:    "/admin/academy/:naver_id",
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.DeleteTag},
+		},
 	}
 }
