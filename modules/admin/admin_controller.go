@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"strings"
 
-	"goyo/models"
 	"goyo/modules/academy"
 	"goyo/modules/common"
 	"goyo/modules/yoga"
@@ -14,7 +13,7 @@ import (
 
 type AdminController struct{}
 
-func (AdminController) GetAcademyListThatHanstTag(c *gin.Context) {
+func (AdminController) GetAcademies(c *gin.Context) {
 	query := new(academy.AcademyListRequest)
 
 	if err := c.ShouldBindQuery(query); err != nil {
@@ -22,10 +21,10 @@ func (AdminController) GetAcademyListThatHanstTag(c *gin.Context) {
 	}
 	var total int64
 
-	GetRepo().GetListThatHasnTagTotal(query, &total)
+	GetRepo().GetAcademieTotalByRegistered(query, &total)
 
 	result := make([]NaverPlaceDTO, 0)
-	GetRepo().GetListThatHasntTag(query, &result)
+	GetRepo().GetAcademiesByRegistered(query, &result)
 	common.SendResult(c, 200, "ok", gin.H{"list": result, "total": total})
 }
 
@@ -55,17 +54,7 @@ func (AdminController) InsertYogaSorts(c *gin.Context) {
 	common.SendOk(c, 201, "success")
 }
 
-func (AdminController) GetAdministrations(c *gin.Context) {
-	var result []models.AdminiStrationDivision
-	common.GetCommonRepo().GetAdminiStrationDivision(&result)
-
-	response := new(common.AdminiStrationsResponse)
-	response.List = result
-
-	common.SendResult(c, 200, "ok", response)
-}
-
-func (AdminController) DeleteTag(c *gin.Context) {
+func (AdminController) DeleteYogaSorts(c *gin.Context) {
 	idParam := c.Param("naver_id")
 
 	result := strings.Split(idParam, ",")

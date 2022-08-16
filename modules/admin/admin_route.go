@@ -12,17 +12,12 @@ func (c AdminController) Routes() []common.Route {
 		{
 			Method:  "GET",
 			Path:    "/admin/academies",
-			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.GetAcademyListThatHanstTag},
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.GetAcademies},
 		},
 		{
 			Method:  "POST",
 			Path:    "/admin/yoga/sorts",
 			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.InsertYogaSorts},
-		},
-		{
-			Method:  "GET",
-			Path:    "/admin/administrations",
-			Handler: []gin.HandlerFunc{c.GetAdministrations},
 		},
 		{
 			Method:  "GET",
@@ -32,7 +27,7 @@ func (c AdminController) Routes() []common.Route {
 		{
 			Method:  "DELETE",
 			Path:    "/admin/academy/:naver_id",
-			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.DeleteTag},
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.DeleteYogaSorts},
 		},
 	}
 }

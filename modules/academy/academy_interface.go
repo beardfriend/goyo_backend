@@ -33,13 +33,13 @@ type AcademyListRequest struct {
 	ContainMeditation bool   `form:"contain_meditation,default=false"`
 }
 
-// -------------- Response ---------------------
+// ------------------- Response -------------------
 type GetListResponse struct {
 	List       []NaverPlaceDTO       `json:"list"`
 	Pagination common.PaginationInfo `json:"pagination"`
 }
 
-// --------------- DTO ---------------------
+// ------------------- DTO -------------------
 
 type NaverPlaceDTO struct {
 	Id            uint          `json:"id"`

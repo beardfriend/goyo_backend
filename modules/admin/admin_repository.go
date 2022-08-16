@@ -13,8 +13,8 @@ import (
 )
 
 type Repo interface {
-	GetListThatHasntTag(query *academy.AcademyListRequest, result *[]NaverPlaceDTO) error
-	GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *int64) error
+	GetAcademiesByRegistered(query *academy.AcademyListRequest, result *[]NaverPlaceDTO) error
+	GetAcademieTotalByRegistered(query *academy.AcademyListRequest, result *int64) error
 	GetDetail(naverId *uint64, result *GetDetailNaverPlaceDTO) error
 	DeleteSorts(idList *[]uint64) error
 }
@@ -26,7 +26,7 @@ var (
 	repoOnce     sync.Once
 )
 
-func (repo) GetListThatHasntTag(query *academy.AcademyListRequest, result *[]NaverPlaceDTO) error {
+func (repo) GetAcademiesByRegistered(query *academy.AcademyListRequest, result *[]NaverPlaceDTO) error {
 	clauses := make([]clause.Expression, 0)
 
 	offset := 0
@@ -77,7 +77,6 @@ func (repo) GetListThatHasntTag(query *academy.AcademyListRequest, result *[]Nav
 
 	return mariadb.GetInstance().
 		Select("a.*, IF( (SELECT count(id) FROM yoga_sorts WHERE naver_place_id = a.id ) > 0 , 1, 0) as is_regist").
-		Debug().
 		Table("naver_place a").
 		Clauses(clauses...).
 		Group("a.id").
@@ -86,7 +85,7 @@ func (repo) GetListThatHasntTag(query *academy.AcademyListRequest, result *[]Nav
 		Find(&result).Error
 }
 
-func (repo) GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *int64) error {
+func (repo) GetAcademieTotalByRegistered(query *academy.AcademyListRequest, result *int64) error {
 	clauses := make([]clause.Expression, 0)
 
 	if query.SiGunGu != "" {
@@ -99,7 +98,6 @@ func (repo) GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *i
 
 	if query.Status == "Regist" {
 		return mariadb.GetInstance().
-			Debug().
 			Table("naver_place a").
 			Joins("INNER JOIN yoga_sorts b ON a.id = b.naver_place_id").
 			Group("a.id").
@@ -109,7 +107,6 @@ func (repo) GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *i
 
 	if query.Status == "NonRegist" {
 		return mariadb.GetInstance().
-			Debug().
 			Table("naver_place a").
 			Joins("LEFT JOIN yoga_sorts b ON a.id = b.naver_place_id").
 			Where("b.naver_place_id IS NULL").
@@ -118,7 +115,6 @@ func (repo) GetListThatHasnTagTotal(query *academy.AcademyListRequest, result *i
 			Count(result).Error
 	}
 	return mariadb.GetInstance().
-		Debug().
 		Table("naver_place a").
 		Group("a.id").
 		Clauses(clauses...).
@@ -136,7 +132,7 @@ func (repo) GetDetail(naverId *uint64, result *GetDetailNaverPlaceDTO) error {
 }
 
 func (repo) DeleteSorts(idList *[]uint64) error {
-	return mariadb.GetInstance().Debug().
+	return mariadb.GetInstance().
 		Delete(&yoga.YogaSorts{}, idList).Error
 }
 
