@@ -22,6 +22,7 @@ func GinRoutes(engine *gin.Engine) {
 		academy.AcademyController{},
 		yoga.YogaController{},
 		admin.AdminController{},
+		common.CommonController{},
 	}
 
 	var routes []common.Route

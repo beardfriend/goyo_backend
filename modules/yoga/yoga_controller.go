@@ -29,6 +29,7 @@ func (YogaController) GetSorts(c *gin.Context) {
 	if location == "middle" {
 		response := make([]GetSortsResponse, 0)
 		common.SendResult(c, 200, "성공적으로 조회했습니다.", response)
+		return
 	}
 
 	// Get Sorts

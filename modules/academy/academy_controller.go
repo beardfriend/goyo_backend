@@ -28,6 +28,7 @@ func (AcademyController) GetList(c *gin.Context) {
 	if err := c.ShouldBindQuery(&query); err != nil {
 		errorMessage := common.BindJsonError(err, "GetListQuery")
 		common.SendError(c, 400, errorMessage+" 를 입력해주세요")
+		return
 	}
 
 	var academyList []NaverPlaceDTO

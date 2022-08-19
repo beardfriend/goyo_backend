@@ -18,6 +18,7 @@ func (AdminController) GetAcademies(c *gin.Context) {
 
 	if err := c.ShouldBindQuery(query); err != nil {
 		common.SendError(c, 400, "QueryString을 확인해주세요")
+		return
 	}
 	var total int64
 
@@ -43,6 +44,7 @@ func (AdminController) InsertYogaSorts(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(body); err != nil {
 		common.SendError(c, 400, "Body를 확인해주세요")
+		return
 	}
 
 	DTO := yoga.GetService().NewSortsDTO(*body)
