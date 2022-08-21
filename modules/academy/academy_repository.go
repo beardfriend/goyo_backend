@@ -8,6 +8,7 @@ import (
 
 	"goyo/server/mariadb"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -68,7 +69,12 @@ func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverPlaceDTO) e
 
 	return mariadb.GetInstance().
 		Clauses(clauses...).
-		Preload("YogaSorts").
+		Debug().
+		Preload("YogaSorts", func(db *gorm.DB) *gorm.DB {
+			c := make([]clause.Expression, 0)
+			c = append(c, clause.OrderBy{Expression: clause.Expr{SQL: "(CASE WHEN name LIKE ? THEN 1 WHEN name LIKE ? THEN 2 ELSE 3 END), name ASC", Vars: []interface{}{query.YogaSort, "%" + query.YogaSort + "%"}}})
+			return db.Clauses(c...)
+		}).
 		Table("naver_place a").
 		Select("a.*").
 		Joins("JOIN yoga_sorts b ON a.id = b.naver_place_id").

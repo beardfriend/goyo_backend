@@ -9,6 +9,7 @@ import (
 
 type Repo interface {
 	GetSortsByName(name string, result *[]SortsDTO) error
+	GetYogaSortDistinct(result *[]SortsDTO) error
 	GetSortsByCosonants(firstWord string, lastWord string, result *[]SortsDTO) error
 	CreateSorts(value *[]CreateSortsDTO) error
 }

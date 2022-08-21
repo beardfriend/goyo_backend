@@ -15,6 +15,9 @@ var (
 )
 
 func GetInstance() *redis.Client {
+	if instance != nil {
+		return instance
+	}
 	onceRedis.Do(func() {
 		addr := fmt.Sprintf("%s:%s", libs.ENV.Redis.Host, libs.ENV.Redis.Port)
 

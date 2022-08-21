@@ -13,5 +13,15 @@ func (c YogaController) Routes() []common.Route {
 			Path:    "/v1/yoga/sorts",
 			Handler: []gin.HandlerFunc{c.GetSorts},
 		},
+		{
+			Method:  "GET",
+			Path:    "/v2/yoga/sorts",
+			Handler: []gin.HandlerFunc{c.GetSortsV2},
+		},
+		{
+			Method:  "POST",
+			Path:    "/yoga/sorts",
+			Handler: []gin.HandlerFunc{c.CronYogaSorts},
+		},
 	}
 }

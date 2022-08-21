@@ -64,7 +64,8 @@ type CrawlMobileNaverPlaceDto struct {
 }
 
 type YogaSortDTO struct {
-	NaverPlaceID uint   `json:"id"`
+	Id           uint   `json:"id"`
+	NaverPlaceID uint   `json:"-"`
 	Name         string `json:"name"`
 }
 
