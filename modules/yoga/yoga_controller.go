@@ -122,8 +122,13 @@ func (YogaController) CronYogaSorts(c *gin.Context) {
 		panic(err)
 	}
 
-	fmt.Println(yogaSort)
 	for _, a := range yogaSort {
+		uniqueResult, _, _ := rd.GetInstance().ZScan(c, a.Name, 0, "", 0).Result()
+
+		if len(uniqueResult) > 1 {
+			continue
+		}
+
 		i := 0
 		var before []string
 		s := strings.TrimSpace(a.Name)
