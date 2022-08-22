@@ -23,5 +23,15 @@ func (c YogaController) Routes() []common.Route {
 			Path:    "/yoga/sorts",
 			Handler: []gin.HandlerFunc{c.CronYogaSorts},
 		},
+		{
+			Method:  "PUT",
+			Path:    "/yoga/sorts/score",
+			Handler: []gin.HandlerFunc{c.UpdateScore},
+		},
+		{
+			Method:  "POST",
+			Path:    "/yoga/sorts/score",
+			Handler: []gin.HandlerFunc{c.Ranking},
+		},
 	}
 }

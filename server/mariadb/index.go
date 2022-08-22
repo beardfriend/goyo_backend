@@ -36,5 +36,5 @@ func GetInstance() *gorm.DB {
 }
 
 func TableGenerate() {
-	GetInstance().AutoMigrate(&naver.NaverPlace{}, &schedule.Schedule{}, &yoga.YogaSorts{})
+	GetInstance().AutoMigrate(&naver.NaverPlace{}, &schedule.Schedule{}, &yoga.YogaSorts{}, &yoga.YogaScore{})
 }

@@ -12,6 +12,9 @@ type Repo interface {
 	GetYogaSortDistinct(result *[]SortsDTO) error
 	GetSortsByCosonants(firstWord string, lastWord string, result *[]SortsDTO) error
 	CreateSorts(value *[]CreateSortsDTO) error
+	CreateCounts(value *[]yoga.YogaScore) error
+	GetScores(names []string, result *[]yoga.YogaScore) error
+	UpdateCounts(id uint, score uint) error
 }
 
 type repo struct{}
@@ -47,11 +50,25 @@ func (repo) GetSortsByCosonants(firstWord string, lastWord string, result *[]Sor
 		Find(&result).Error
 }
 
+func (repo) GetScores(names []string, result *[]yoga.YogaScore) error {
+	return mariadb.GetInstance().Where("name IN ?", names).Find(&result).Error
+}
+
 // ------------------- Create -------------------
 
 func (repo) CreateSorts(value *[]CreateSortsDTO) error {
 	return mariadb.GetInstance().
 		Create(&value).Error
+}
+
+func (repo) CreateCounts(value *[]yoga.YogaScore) error {
+	return mariadb.GetInstance().Create(&value).Error
+}
+
+// ------------------- Update -------------------
+
+func (repo) UpdateCounts(id uint, score uint) error {
+	return mariadb.GetInstance().Model(&yoga.YogaScore{}).Where("id = ?", id).Update("score", score).Error
 }
 
 // ------------------- SingleTon -------------------

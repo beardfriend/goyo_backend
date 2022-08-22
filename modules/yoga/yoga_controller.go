@@ -6,6 +6,7 @@ import (
 	"unicode/utf8"
 
 	"goyo/libs"
+	"goyo/models/yoga"
 	"goyo/modules/common"
 	rd "goyo/server/redis"
 
@@ -168,4 +169,70 @@ func (YogaController) CronYogaSorts(c *gin.Context) {
 		}
 	}
 	common.SendOk(c, 200, "ok")
+}
+
+func (YogaController) UpdateScore(c *gin.Context) {
+	body := new(UpdateScoreBody)
+
+	if err := c.ShouldBindJSON(body); err != nil {
+		common.SendError(c, 400, "잘못된 요청입니다.")
+		return
+	}
+
+	arr, _, _ := rd.GetInstance().ZScan(c, body.Member, 0, body.Member, 0).Result()
+	if len(arr) < 1 {
+		common.SendError(c, 400, "없음")
+		return
+	}
+
+	rd.GetInstance().ZIncrBy(c, body.Keyword, 1, body.Member)
+	common.SendOk(c, 201, "ok")
+}
+
+func (YogaController) Ranking(c *gin.Context) {
+	var yogaSort []SortsDTO
+	if err := GetRepo().GetYogaSortDistinct(&yogaSort); err != nil {
+		panic(err)
+	}
+
+	keys, _ := rd.GetInstance().Keys(c, "*").Result()
+	result, _ := rd.GetInstance().ZUnionWithScores(c, redis.ZStore{Keys: keys}).Result()
+
+	var searchValue []string
+	scoreValue := make(map[string]*yoga.YogaScore, 0)
+
+	for _, v := range result {
+		if v.Score == 0 {
+			continue
+		}
+		searchValue = append(searchValue, v.Member.(string))
+		scoreValue[v.Member.(string)] = &yoga.YogaScore{Name: v.Member.(string), Score: uint(v.Score)}
+	}
+
+	var alreadyExist []yoga.YogaScore
+	if err := GetRepo().GetScores(searchValue, &alreadyExist); err != nil {
+		panic(err)
+	}
+
+	for _, v := range alreadyExist {
+		fmt.Println(v.ID, scoreValue[v.Name].Score)
+		GetRepo().UpdateCounts(v.ID, scoreValue[v.Name].Score)
+		scoreValue[v.Name] = nil
+	}
+
+	var insertValue []yoga.YogaScore
+	for _, v := range searchValue {
+		if scoreValue[v] == nil {
+			continue
+		}
+		insertValue = append(insertValue, yoga.YogaScore{Name: v, Score: scoreValue[v].Score})
+	}
+
+	if len(insertValue) > 0 {
+		if err := GetRepo().CreateCounts(&insertValue); err != nil {
+			panic(err)
+		}
+	}
+
+	common.SendOk(c, 201, "ok")
 }

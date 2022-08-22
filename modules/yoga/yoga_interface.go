@@ -12,6 +12,11 @@ type InsertYogaSortsBodyDetail struct {
 	Name         string `json:"name"`
 }
 
+type UpdateScoreBody struct {
+	Keyword string `json:"keyword" binding:"required"`
+	Member  string `json:"member" binding:"required"`
+}
+
 // ------------------- Response -------------------
 type GetSortsResponse struct {
 	Id   uint   `json:"id"`
