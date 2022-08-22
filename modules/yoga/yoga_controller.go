@@ -65,19 +65,48 @@ func (YogaController) GetSortsV2(c *gin.Context) {
 		common.SendError(c, 400, "쿼리스트링을 확인해주세요")
 		return
 	}
-	// 최대 카운트를 조회해서,
-	count := rd.GetInstance().ZCount(c, query.Name, "1", "+inf").Val()
-	if count > 0 {
-		key, _ := rd.GetInstance().ZRevRange(c, query.Name, 0, count-1).Result()
+
+	count, _ := rd.GetInstance().ZCount(c, query.Name, "0", "1").Result()
+
+	var result []string
+	var rankedResult []string
+	var randomResult []string
+	var uniqueResult []string
+	if count == 1 {
+		uniqueResult, _, _ = rd.GetInstance().ZScan(c, query.Name, 0, "", 1).Result()
 	}
 
-	// 토탈 카운트에서 상위 2개를 넣어준다. 나머지는 랜덤으로 밑에 카운트 낮은 것들을 돌린다.
+	if count == 2 {
+		rankedIndex := 1
+		uniqueResult, _, _ = rd.GetInstance().ZScan(c, query.Name, 0, query.Name, 1).Result()
+		if len(uniqueResult) > 1 {
+			rankedIndex = 0
+		}
+		rankedResult, _ = rd.GetInstance().ZRevRange(c, query.Name, 0, int64(rankedIndex)).Result()
+	}
 
-	// key, _ := rd.GetInstance().ZRangeByLex(c, query.Name, &redis.ZRangeBy{Min: "-", Max: "+", Offset: 0, Count: 100}).Result()
-	// key, _, _ := rd.GetInstance().ZScan(c, query.Name, uint64(0), "", int64(10)).Result()
+	if count > 2 {
+		if count < 8 {
+			fmt.Println(count)
+			uniqueResult, _, _ = rd.GetInstance().ZScan(c, query.Name, 0, "", 0).Result()
+			rankedResult, _ = rd.GetInstance().ZRevRange(c, query.Name, 0, count-2).Result()
+		} else {
+			rankedResult, _ = rd.GetInstance().ZRevRange(c, query.Name, 0, 1).Result()
+			randomResult, _ = rd.GetInstance().ZRandMember(c, query.Name, 6).Result()
+		}
+	}
+	if len(uniqueResult) > 1 {
+		result = append(result, uniqueResult[0])
+	}
+	if len(rankedResult) > 0 {
+		result = append(result, rankedResult...)
+	}
+	if len(randomResult) > 0 {
+		result = append(result, randomResult...)
+	}
 
 	var value []SortsDTO
-	for _, v := range key {
+	for _, v := range result {
 		value = append(value, SortsDTO{Name: v})
 	}
 	// Make Response
