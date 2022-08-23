@@ -14,6 +14,7 @@ type Repo interface {
 	CreateSorts(value *[]CreateSortsDTO) error
 	CreateCounts(value *[]yoga.YogaScore) error
 	GetScores(names []string, result *[]yoga.YogaScore) error
+	GetRanking(result *[]yoga.YogaScore) error
 	UpdateCounts(id uint, score uint) error
 }
 
@@ -54,11 +55,14 @@ func (repo) GetScores(names []string, result *[]yoga.YogaScore) error {
 	return mariadb.GetInstance().Where("name IN ?", names).Find(&result).Error
 }
 
+func (repo) GetRanking(result *[]yoga.YogaScore) error {
+	return mariadb.GetInstance().Order("score DESC").Limit(10).Find(&result).Error
+}
+
 // ------------------- Create -------------------
 
 func (repo) CreateSorts(value *[]CreateSortsDTO) error {
-	return mariadb.GetInstance().
-		Create(&value).Error
+	return mariadb.GetInstance().Create(&value).Error
 }
 
 func (repo) CreateCounts(value *[]yoga.YogaScore) error {

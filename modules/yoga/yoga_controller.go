@@ -189,6 +189,15 @@ func (YogaController) UpdateScore(c *gin.Context) {
 	common.SendOk(c, 201, "ok")
 }
 
+func (YogaController) GetRanking(c *gin.Context) {
+	var result []yoga.YogaScore
+	if err := GetRepo().GetRanking(&result); err != nil {
+		panic(err)
+	}
+
+	common.SendResult(c, 200, "ok", result)
+}
+
 func (YogaController) Ranking(c *gin.Context) {
 	var yogaSort []SortsDTO
 	if err := GetRepo().GetYogaSortDistinct(&yogaSort); err != nil {
