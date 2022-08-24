@@ -88,7 +88,6 @@ func (YogaController) GetSortsV2(c *gin.Context) {
 
 	if count > 2 {
 		if count < 8 {
-			fmt.Println(count)
 			uniqueResult, _, _ = rd.GetInstance().ZScan(c, query.Name, 0, "", 0).Result()
 			rankedResult, _ = rd.GetInstance().ZRevRange(c, query.Name, 0, count-2).Result()
 		} else {
@@ -114,6 +113,7 @@ func (YogaController) GetSortsV2(c *gin.Context) {
 	response := GetService().NewSortsList(value)
 
 	// Send
+	fmt.Println(query.Name, count, response)
 	common.SendResult(c, 200, "성공적으로 조회했습니다.", response)
 }
 
@@ -160,7 +160,6 @@ func (YogaController) CronYogaSorts(c *gin.Context) {
 			}
 
 			if i > 0 && i < utf8.RuneCountInString(s)-1 {
-				fmt.Println(beforeString)
 				rd.GetInstance().ZAdd(c, beforeString, redis.Z{Member: s})
 				rd.GetInstance().ZAdd(c, beforeString+choWord, redis.Z{Member: s})
 			}
@@ -199,11 +198,6 @@ func (YogaController) GetRanking(c *gin.Context) {
 }
 
 func (YogaController) Ranking(c *gin.Context) {
-	var yogaSort []SortsDTO
-	if err := GetRepo().GetYogaSortDistinct(&yogaSort); err != nil {
-		panic(err)
-	}
-
 	keys, _ := rd.GetInstance().Keys(c, "*").Result()
 	result, _ := rd.GetInstance().ZUnionWithScores(c, redis.ZStore{Keys: keys}).Result()
 
@@ -224,7 +218,6 @@ func (YogaController) Ranking(c *gin.Context) {
 	}
 
 	for _, v := range alreadyExist {
-		fmt.Println(v.ID, scoreValue[v.Name].Score)
 		GetRepo().UpdateCounts(v.ID, scoreValue[v.Name].Score)
 		scoreValue[v.Name] = nil
 	}
