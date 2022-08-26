@@ -189,7 +189,7 @@ func (YogaController) UpdateScore(c *gin.Context) {
 }
 
 func (YogaController) GetRanking(c *gin.Context) {
-	var result []yoga.YogaScore
+	var result []RankingDTO
 	if err := GetRepo().GetRanking(&result); err != nil {
 		panic(err)
 	}

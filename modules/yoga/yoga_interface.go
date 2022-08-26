@@ -34,6 +34,11 @@ type SortsDTO struct {
 	Name string `json:"name"`
 }
 
+type RankingDTO struct {
+	models.Model
+	Name string `json:"name"`
+}
+
 type CreateSortsDTO struct {
 	models.Model
 	NaverPlaceId int    `json:"naver_place_id"`
