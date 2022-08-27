@@ -27,7 +27,7 @@ func (c YogaController) Routes() []common.Route {
 		{
 			Method:  "PUT",
 			Path:    "/yoga/sorts/score",
-			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.UpdateScore},
+			Handler: []gin.HandlerFunc{c.UpdateScore},
 		},
 		{
 			Method:  "POST",
