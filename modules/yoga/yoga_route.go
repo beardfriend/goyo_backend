@@ -2,6 +2,7 @@ package yoga
 
 import (
 	"goyo/modules/common"
+	"goyo/modules/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,17 +22,17 @@ func (c YogaController) Routes() []common.Route {
 		{
 			Method:  "POST",
 			Path:    "/yoga/sorts",
-			Handler: []gin.HandlerFunc{c.CronYogaSorts},
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.CronYogaSorts},
 		},
 		{
 			Method:  "PUT",
 			Path:    "/yoga/sorts/score",
-			Handler: []gin.HandlerFunc{c.UpdateScore},
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.UpdateScore},
 		},
 		{
 			Method:  "POST",
 			Path:    "/yoga/sorts/score",
-			Handler: []gin.HandlerFunc{c.Ranking},
+			Handler: []gin.HandlerFunc{middlewares.ValidateAPIkey, c.Ranking},
 		},
 		{
 			Method:  "GET",
