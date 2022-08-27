@@ -56,7 +56,7 @@ func (repo) GetScores(names []string, result *[]yoga.YogaScore) error {
 }
 
 func (repo) GetRanking(result *[]RankingDTO) error {
-	return mariadb.GetInstance().Model(&yoga.YogaScore{}).Order("score DESC").Limit(10).Find(&result).Error
+	return mariadb.GetInstance().Model(&yoga.YogaScore{}).Order("score DESC").Limit(5).Find(&result).Error
 }
 
 // ------------------- Create -------------------
