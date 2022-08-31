@@ -21,7 +21,3 @@ type Schedule struct {
 	TeacherName string `gorm:"column:teacher_name; VARCHAR; size:256; comment: 선생님 이름"`
 	models.TimeWithDeleted
 }
-
-func (Schedule) TableName() string {
-	return "schedule"
-}
