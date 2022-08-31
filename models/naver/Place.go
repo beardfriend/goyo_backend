@@ -8,7 +8,7 @@ import (
 
 // 서비스가 확장될 경우 회원가입을 받으면서 정보를 직접 받기로 ( 임시 테이블 )
 type NaverPlace struct {
-	models.Model
+	models.Primary
 	YogaSorts     []yoga.YogaSorts    `gorm:"constraint:OnUpdate:CASCADE"`
 	Schedule      []schedule.Schedule `gorm:"constraint:OnUpdate:CASCADE"`
 	NaverId       string              `gorm:"index; column:naver_id; VARCHAR; NOT NULL; size:20; comment:네이버 고유 아이디"`
@@ -23,6 +23,7 @@ type NaverPlace struct {
 	ThumbUrl      *string             `gorm:"column:thumb_url; VARCHAR; size:1000; comment: 썸네일 이미지 주소"`
 	X             string              `gorm:"column:x; VARCHAR; size:100; comment: x좌표"`
 	Y             string              `gorm:"column:y; VARCHAR; size:100; comment: y좌표"`
+	models.TimeWithDeleted
 }
 
 func (NaverPlace) TableName() string {

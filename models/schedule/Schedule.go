@@ -7,7 +7,7 @@ import (
 )
 
 type Schedule struct {
-	models.Model
+	models.Primary
 	NaverPlaceID uint `gorm:"NOT NULL"`
 	YogaSorts    []yoga.YogaSorts
 	Sort         string           `gorm:"column:sort; VARCHAR; NOT NULL; size:100; comment: 요가 종류"`
@@ -19,6 +19,7 @@ type Schedule struct {
 	// RoomName     string           `gorm:"column:room_name; VARCHAR; size:256; comment: 강의실 이름"` // 차후에, 따로 테이블 분리.
 	Level       string `gorm:"column:level; VARCHAR; size:256; comment: 강의 난이도"`
 	TeacherName string `gorm:"column:teacher_name; VARCHAR; size:256; comment: 선생님 이름"`
+	models.TimeWithDeleted
 }
 
 func (Schedule) TableName() string {

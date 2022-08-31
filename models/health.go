@@ -1,6 +1,7 @@
 package models
 
 type Health struct {
-	Model
+	Primary
 	Status string `gorm:"comment:상태"`
+	TimeWithDeleted
 }

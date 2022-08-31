@@ -35,14 +35,16 @@ type SortsDTO struct {
 }
 
 type RankingDTO struct {
-	models.Model
+	models.Primary
 	Name string `json:"name"`
+	models.DefaultTime
 }
 
 type CreateSortsDTO struct {
-	models.Model
+	models.Primary
 	NaverPlaceId int    `json:"naver_place_id"`
 	Name         string `json:"name"`
+	models.DefaultTime
 }
 
 func (CreateSortsDTO) TableName() string {
