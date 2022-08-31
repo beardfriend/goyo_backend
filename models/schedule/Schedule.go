@@ -11,8 +11,8 @@ type Schedule struct {
 	NaverPlaceID uint `gorm:"NOT NULL"`
 	YogaSorts    []yoga.YogaSorts
 	Sort         string           `gorm:"column:sort; VARCHAR; NOT NULL; size:100; comment: 요가 종류"`
-	Year         string           `gorm:"column:year VARCHAR; NOT NULL; size:100; comment: 년"`
-	Month        string           `gorm:"column:month VARCHAR; NOT NULL; size:100; comment: 월"`
+	Year         string           `gorm:"column:year; VARCHAR; NOT NULL; size:100; comment: 년"`
+	Month        string           `gorm:"column:month; VARCHAR; NOT NULL; size:100; comment: 월"`
 	Day          string           `gorm:"column:day; VARCHAR; NOT NULL; size:20; comment: 요일"`
 	StartTime    types.TimeString `gorm:"column:start_time; TIME; NOT NULL; comment: 요가 시작 시간"`
 	EndTime      types.TimeString `gorm:"column:end_time; TIME; NOT NULL; comment: 요가 종료 시간"`
