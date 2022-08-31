@@ -45,5 +45,6 @@ func TableGenerate() {
 		&users.Users{},
 		&users.Normal{},
 		&users.Social{},
+		&users.UserAcademy{},
 	)
 }
