@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"goyo/models/naver"
+	"goyo/modules/common"
 
 	"goyo/server/mariadb"
 
@@ -43,7 +44,6 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 	clauses := AcademyListClause(query)
 
 	return mariadb.GetInstance().
-		Debug().
 		Clauses(clauses...).
 		Table("naver_place a").
 		Select("count(a.id) as total").
@@ -53,26 +53,18 @@ func (repo) GetAcademyTotalByYoga(query *GetListQuery, total *int64) error {
 }
 
 func (repo) GetAcademyListByYoga(query *GetListQuery, result *[]NaverPlaceDTO) error {
+	listClauses := common.GetCommonRepo().CommonListClauses(query.PageNo, query.RowCount)
 	clauses := AcademyListClause(query)
-	offset := 0
-	limit := 10
-
-	if query.RowCount != 10 && query.RowCount != 0 {
-		limit = query.RowCount
-	}
-
-	if query.PageNo > 1 {
-		offset = offset + ((query.PageNo - 1) * limit)
-	}
-
-	clauses = append(clauses, clause.Limit{Limit: limit, Offset: offset})
+	clauses = append(clauses, listClauses)
 
 	return mariadb.GetInstance().
 		Clauses(clauses...).
-		Debug().
 		Preload("YogaSorts", func(db *gorm.DB) *gorm.DB {
 			c := make([]clause.Expression, 0)
-			c = append(c, clause.OrderBy{Expression: clause.Expr{SQL: "(CASE WHEN name LIKE ? THEN 1 WHEN name LIKE ? THEN 2 ELSE 3 END), name ASC", Vars: []interface{}{query.YogaSort, "%" + query.YogaSort + "%"}}})
+			c = append(c, clause.OrderBy{Expression: clause.Expr{
+				SQL:  "(CASE WHEN name LIKE ? THEN 1 WHEN name LIKE ? THEN 2 ELSE 3 END), name ASC",
+				Vars: []interface{}{query.YogaSort, "%" + query.YogaSort + "%"},
+			}})
 			return db.Clauses(c...)
 		}).
 		Table("naver_place a").
