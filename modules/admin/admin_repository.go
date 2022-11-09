@@ -6,6 +6,7 @@ import (
 	"goyo/models/naver"
 	"goyo/models/yoga"
 	"goyo/modules/academy"
+	"goyo/modules/common"
 	"goyo/server/mariadb"
 
 	"gorm.io/gorm"
@@ -28,18 +29,9 @@ var (
 
 func (repo) GetAcademiesByRegistered(query *academy.AcademyListRequest, result *[]NaverPlaceDTO) error {
 	clauses := make([]clause.Expression, 0)
+	listClauses := common.GetCommonRepo().CommonListClauses(query.PageNo, query.RowCount)
 
-	offset := 0
-	limit := 10
-
-	if query.RowCount != 10 && query.RowCount != 0 {
-		limit = query.RowCount
-	}
-
-	if query.PageNo > 1 {
-		offset = offset + ((query.PageNo - 1) * limit)
-	}
-
+	clauses = append(clauses, listClauses)
 	if query.SiGunGu != "" {
 		clauses = append(clauses, clause.Like{Column: "a.common_address", Value: "%" + query.SiGunGu + "%"})
 	}
@@ -56,8 +48,6 @@ func (repo) GetAcademiesByRegistered(query *academy.AcademyListRequest, result *
 			Joins("INNER JOIN yoga_sorts b ON a.id = b.naver_place_id").
 			Clauses(clauses...).
 			Group("a.id").
-			Limit(limit).
-			Offset(offset).
 			Find(&result).Error
 	}
 
@@ -70,8 +60,6 @@ func (repo) GetAcademiesByRegistered(query *academy.AcademyListRequest, result *
 			Where("b.naver_place_id IS NULL").
 			Clauses(clauses...).
 			Group("a.id").
-			Limit(limit).
-			Offset(offset).
 			Find(&result).Error
 	}
 
@@ -80,8 +68,6 @@ func (repo) GetAcademiesByRegistered(query *academy.AcademyListRequest, result *
 		Table("naver_place a").
 		Clauses(clauses...).
 		Group("a.id").
-		Limit(limit).
-		Offset(offset).
 		Find(&result).Error
 }
 
