@@ -1,10 +1,11 @@
 
 # Relax
-✔️ 서비스 : 요가 검색 서비스
-✔️ 기여도 : 본인 100%
-✔️ URL : [👆Click](http://3.38.117.200/)
-✔️ 백엔드 : [👆Click](https://github.com/beardfriend/goyo_backend)
-✔️ 프론트엔드 : [👆Click](https://github.com/beardfriend/goyo_front)
+✔️ 서비스 : 요가 검색 서비스  
+✔️ 기여도 : 본인 100%  
+✔️ URL : [👆Click](http://3.38.117.200/)  
+✔️ 백엔드 : [👆Click](https://github.com/beardfriend/goyo_backend)  
+✔️ 프론트엔드 : [👆Click](https://github.com/beardfriend/goyo_front)  
+
 # 1. 개요
 
 ## 1.1. 사용기술
