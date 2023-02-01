@@ -3,13 +3,13 @@
 
 <div style="display:flex;">
    <img src="https://img.shields.io/badge/GO-gray?style=flat&logo=Go&logoColor=00ADD8"/>
-	<img src="https://img.shields.io/badge/gORM-white?style=flat"/>
-	<img src="https://img.shields.io/badge/gin-white?style=flat"/>
-	  <img src="https://img.shields.io/badge/MariaDB-green?style=flat&logo=MariaDB&logoColor=003545"/>
-  <img src="https://img.shields.io/badge/Redis-green?style=flat&logo=Redis&logoColor=DC382D"/>
-    <img src="https://img.shields.io/badge/AWS_LightSail-green?style=flat"/>
-  <img src="https://img.shields.io/badge/Docker-green?style=flat&logo=Docker&logoColor=2496ED"/>
-  <img src="https://img.shields.io/badge/Nginx-green?style=flat&logo=NGINX&logoColor=009639"/>
+	<img src="https://img.shields.io/badge/gORM-gray?style=flat"/>
+	<img src="https://img.shields.io/badge/gin-gray?style=flat"/>
+	  <img src="https://img.shields.io/badge/MariaDB-gray?style=flat&logo=MariaDB&logoColor=003545"/>
+  <img src="https://img.shields.io/badge/Redis-gray?style=flat&logo=Redis&logoColor=DC382D"/>
+    <img src="https://img.shields.io/badge/AWS_LightSail-gray?style=flat"/>
+  <img src="https://img.shields.io/badge/Docker-gray?style=flat&logo=Docker&logoColor=2496ED"/>
+  <img src="https://img.shields.io/badge/Nginx-gray?style=flat&logo=NGINX&logoColor=009639"/>
 </div>
 
 <br/>
